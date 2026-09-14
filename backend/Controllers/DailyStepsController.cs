@@ -21,15 +21,20 @@ namespace backend.Controllers
             var stepRecords = _stepsRepository.GetAll();
             return Ok(stepRecords);
         }
-        // get by date
+        // get by date && optional id
         [HttpGet]
         [Route("search")]
-        public ActionResult<List<StepRecord>> SearchDates(string date)
+        public ActionResult<List<StepRecord>> SearchDates([FromQuery] string date, [FromQuery] int? id)
         {
             var stepRecords = _stepsRepository.SearchByDate(date);
-            if (stepRecords == null || !stepRecords.Any())
+
+
+            if (id != null)
+                stepRecords = stepRecords.Where(u => u.UserId.Equals(id));
+            
+            if (!stepRecords.Any())
             {
-                return NotFound();
+                return NotFound("No employees match the criteria");
             }
 
             return Ok(stepRecords);

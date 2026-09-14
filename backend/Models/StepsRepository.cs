@@ -8,6 +8,7 @@ namespace backend.Models
         public readonly List<StepRecord> DailyRecords =
         [
             new StepRecord(new DateTime(2026, 09, 13), 5014, 15),
+            new StepRecord(new DateTime(2026, 09, 13), 5014, 17),
             new StepRecord(new DateTime(2026, 09, 14), 1000, 17),
             new StepRecord(new DateTime(2020, 3, 10), 34, 15),
             new StepRecord(new DateTime(2020, 12, 13), 6312, 100),
@@ -32,7 +33,7 @@ namespace backend.Models
             return stepRecords;
         }
         
-
+        
 
         
     }
