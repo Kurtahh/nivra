@@ -1,4 +1,5 @@
-using Nivra.Models;
+using backend.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>

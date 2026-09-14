@@ -1,19 +1,19 @@
 
 
 
-namespace Nivra.Models
+namespace backend.Models
 {
     public class StepsRepository
     {
-        public List<StepRecord> DailyRecords = new List<StepRecord>() 
-        {   
+        public readonly List<StepRecord> DailyRecords =
+        [
             new StepRecord(new DateTime(2026, 09, 13), 5014, 15),
             new StepRecord(new DateTime(2026, 09, 14), 1000, 17),
-            new StepRecord(new DateTime(2026, 09, 13), 5014, 15),
-            new StepRecord(new DateTime(2026, 09, 13), 5014, 15),
-            new StepRecord(new DateTime(2026, 09, 13), 5014, 15),
-            new StepRecord(new DateTime(2026, 09, 13), 5014, 15)
-        };
+            new StepRecord(new DateTime(2020, 3, 10), 34, 15),
+            new StepRecord(new DateTime(2020, 12, 13), 6312, 100),
+            new StepRecord(new DateTime(2020, 08, 13), 5514, 115),
+            new StepRecord(new DateTime(2024, 11, 15), 4120, 150)
+        ];
 
 
         public IEnumerable<StepRecord> GetAll()
@@ -22,6 +22,16 @@ namespace Nivra.Models
 
             return stepRecords;
         }
+        
+        
+        public IEnumerable<StepRecord> SearchByDate(string date)
+        {
+            var stepRecords =
+                DailyRecords.Where(u => u.DateVal.Equals(DateTime.Parse(date)));
+
+            return stepRecords;
+        }
+        
 
 
         
