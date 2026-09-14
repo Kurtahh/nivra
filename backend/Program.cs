@@ -1,6 +1,6 @@
+using Nivra.Models;
 var builder = WebApplication.CreateBuilder(args);
 
-// Add CORS policy for the frontend developer
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -14,10 +14,10 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<StepsRepository>();
 
 var app = builder.Build();
 
-// Enable CORS before mapping controllers
 app.UseCors("AllowFrontend");
 
 if (app.Environment.IsDevelopment())
