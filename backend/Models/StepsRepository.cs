@@ -27,7 +27,7 @@ namespace backend.Models
         public IEnumerable<StepRecord> SearchByDate(string date)
         {
             var stepRecords =
-                DailyRecords.Where(u => u.DateVal.Equals(DateTime.Parse(date)));
+                DailyRecords.Where(u => u.Date.Equals(DateTime.Parse(date)));
 
             return stepRecords;
         }
