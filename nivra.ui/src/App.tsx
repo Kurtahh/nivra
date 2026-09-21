@@ -1,5 +1,6 @@
 import './App.css';
 import { useEffect, useState } from 'react';
+import LoginForm from './LoginForm.tsx';
 
 type StepRecord = {
   date: string;
@@ -25,6 +26,8 @@ export default function App() {
             <li key={i}>{r.date} — {r.stepCount} steps (user {r.userId})</li>
           ))}
         </ul>
+        <LoginForm /> 
+          
       </div>
   );
 }
