@@ -19,7 +19,6 @@ builder.Services.AddDbContext<AppDbContext>((DbContextOptionsBuilder options) =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<StepsRepository>();
 
 var app = builder.Build();
 
