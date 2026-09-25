@@ -1,4 +1,5 @@
 using backend.Models;
+using backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -7,18 +8,17 @@ namespace backend.Controllers
     [ApiController]
     public class StepEntryController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly StepEntryService _service;
 
-        public StepEntryController(AppDbContext context)
+        public StepEntryController(StepEntryService service)
         {
-            _context = context;
+            _service = service;
         }
 
         [HttpPost]
         public IActionResult CreateStepEntry(StepEntry entry)
         {
-            _context.Add(entry);
-            _context.SaveChanges();
+            _service.LogSteps(entry); //repository pattern
             return Ok();
         }
     }
