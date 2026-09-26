@@ -2,17 +2,23 @@ import { useState } from "react";
 
 export default function InputSteps() {
     const [steps, setSteps] = useState("")
+    const [errorMsg, setErrorMsg] = useState("")
 
     async function handleSubmit(e) {
         e.preventDefault()
         const response = await fetch('http://localhost:5207/api/StepEntry', {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(Number(steps))
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(Number(steps))
         });
 
         if (response.ok) {
-            setSteps("");
+            setSteps("")
+            setErrorMsg("")
+        }
+        else {
+            const msg = await response.text();
+            setErrorMsg(msg)
         }
     }
 
@@ -32,6 +38,9 @@ export default function InputSteps() {
                     Įrašyti
                 </button>
             </form>
+            <p>
+                {errorMsg}
+            </p>
         </div>
     );
 }
