@@ -7,6 +7,13 @@ export default function SignUpForm() {
     const [password, setPassword] = useState("")
     
     function handleSubmit(e) {
+        let current_date = Date();
+        let id = 3;
+        
+        if (!response) {
+            throw new Error("Couldn't signup");
+        }
+        
         console.log(username + " " + password );
     }
     
