@@ -5,7 +5,7 @@ export default function InputSteps() {
 
     async function handleSubmit(e) {
         e.preventDefault()
-        const response = await fetch('http://localhost:5207/api/StepEntries', {
+        const response = await fetch('http://localhost:5207/api/StepEntry', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(Number(steps))

@@ -1,4 +1,3 @@
-using backend.Models;
 using backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,10 +15,17 @@ namespace backend.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateStepEntry(StepEntry entry)
+        public IActionResult CreateStepEntry([FromBody] int stepCount)
         {
-            _service.LogSteps(entry); //repository pattern
-            return Ok();
+            try
+            {
+                _service.LogSteps(stepCount); //repository pattern
+                return Ok();
+            }
+            catch(ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

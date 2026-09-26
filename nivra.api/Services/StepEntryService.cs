@@ -11,8 +11,19 @@ namespace backend.Services{
             _repository = repository;
         }
 
-        public void LogSteps(StepEntry entry)
+        public void LogSteps(int stepCount)
         {
+            if(stepCount < 1)
+            {
+                throw new ArgumentException("stepCount cannot be less than 1");
+            }
+
+            var entry = new StepEntry();
+
+            entry.StepCount = stepCount;
+            entry.Date = DateOnly.FromDateTime(DateTime.Now);
+            entry.UserId = 1; //placeholder
+
             _repository.Add(entry);
         }
     }   
