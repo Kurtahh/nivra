@@ -7,8 +7,20 @@ export default function SignUpForm() {
     const [password, setPassword] = useState("")
     
     function handleSubmit(e) {
-        let current_date = Date();
-        let id = 3;
+        e.preventDefault()
+        let id = 3
+        let passwordHash = password;
+        const response = fetch('http://localhost:5207/api/User', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({username, passwordHash})
+        })
+        
+        if (!response) {
+            throw new Error("Couldn't signup");
+        }
         
         console.log(username + " " + password );
     }
