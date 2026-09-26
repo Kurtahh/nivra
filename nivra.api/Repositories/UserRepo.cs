@@ -18,5 +18,11 @@ namespace backend.Repositories
             _context.Add(user);
             _context.SaveChanges();
         }
+
+
+        public User? GetUser(string username)
+        {
+             return _context.Users.SingleOrDefault(u => u.Username == username);
+        }
     } 
 }
