@@ -1,13 +1,13 @@
 import {useEffect, useState} from "react";
 
-type StepRecord = {
+type StepEntry = {
     date: string;
     stepCount: number;
     userId: number;
 };
 
 export default function Home() {
-    const [records, setRecords] = useState<StepRecord[]>([]);
+    const [records, setRecords] = useState<StepEntry[]>([]);
     
     useEffect(() => {
         fetch('http://localhost:5207/api/DailySteps')
