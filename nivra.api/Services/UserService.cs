@@ -29,8 +29,14 @@ namespace backend.Services{
         public bool CheckPassword(User inputUser, User databaseUser)
         {
              var hasher = new PasswordHasher<User>();
-             var passwordHash = hasher.HashPassword(inputUser, inputUser.PasswordHash);
-             return passwordHash == databaseUser?.PasswordHash;
+             var result = hasher.VerifyHashedPassword(inputUser, databaseUser.PasswordHash, inputUser.PasswordHash);
+             if (result == PasswordVerificationResult.Success)
+             {
+                 
+                 return true;
+             }
+             
+             return false;
         }
     }   
     
