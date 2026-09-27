@@ -18,5 +18,14 @@ namespace backend.Services{
             user.PasswordHash = hasher.HashPassword(user, user.PasswordHash);
             _repository.Add(user);
         }
+
+        public User? CheckIfUsernameExists(string username)
+        {
+            return _repository.GetUser(username);
+
+        }
     }   
+    
+    
+    
 }
