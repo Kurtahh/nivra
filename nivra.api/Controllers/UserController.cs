@@ -41,7 +41,7 @@ namespace backend.Controllers
             if (_service.CheckPassword(user, databaseUser))
             {
                 Console.WriteLine("Login successful!");
-                return Ok(new [] {"Login successful!", "true"});
+                return Ok(new [] {"Login successful!", "true", databaseUser.Id.ToString()});
             }
 
             Console.WriteLine("Password is not correct!");
