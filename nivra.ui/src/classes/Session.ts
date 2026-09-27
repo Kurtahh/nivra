@@ -27,5 +27,6 @@ export class Session {
        this.loginStatus = true;
        this.username = username;
        
+       
     }
 }
