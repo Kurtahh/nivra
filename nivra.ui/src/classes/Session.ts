@@ -27,9 +27,5 @@ export class Session {
        this.loginStatus = true;
        this.username = username;
        
-       if (this.loginStatus) {
-           console.log("I have logged in");
-       }
-       
     }
 }
