@@ -34,40 +34,23 @@ namespace backend.Controllers
             if (databaseUser == null )
             {
                 
-                HttpClient client = new HttpClient();
-                var obj = new
-                {
-                    loginStatus = "Username doesn't exist.",
-                };
-                client.PostAsJsonAsync("https://localhost:5173/", obj);
+                Console.WriteLine("Username doesn't exist!");
                 return Ok();
             }
 
             if (_service.CheckPassword(user, databaseUser))
             {
-                HttpClient client = new HttpClient();
-                var obj = new
-                {
-                    loginStatus = "Login successful",
-                };
-                client.PostAsJsonAsync("https://localhost:5173/", obj);
+                Console.WriteLine("Log in successful!");
                 return Ok();
             }
-            else
-            {
-                HttpClient client = new HttpClient();
-                var obj = new
-                {
-                    loginStatus = "Password is incorrect",
-                };
-                client.PostAsJsonAsync("https://localhost:5173/", obj);
-                return Ok();
+
+            Console.WriteLine("Password is not correct!");
+            return Ok();
                 
-            }
-            
-            
-            
-            
+
+
+
+
         }
             
     }
