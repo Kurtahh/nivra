@@ -4,6 +4,7 @@ export class Session {
     static #instance: Session; 
     private username: String
     private loginStatus: Boolean;
+    private id: Number;
    
    private constructor()  {
         this.username = ""
@@ -22,10 +23,11 @@ export class Session {
         return this.username;
     }
     
-    public login( username: String) {
+    public login( username: String, id: Number) {
         
        this.loginStatus = true;
        this.username = username;
+       this.id = id;
        
        
     }
