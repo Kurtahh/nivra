@@ -29,13 +29,45 @@ namespace backend.Controllers
         [Route("Authenticate")]
         public IActionResult AuthenticateUser(User user)
         {
-            HttpClient client = new HttpClient();
-            var obj = new
+            
+            var databaseUser = _service.CheckIfUsernameExists(user.Username);
+            if (databaseUser == null )
             {
-                loginStatus = "Login was successful",
-            };
-            client.PostAsJsonAsync("https://localhost:5173/", obj);
-            return Ok();
+                
+                HttpClient client = new HttpClient();
+                var obj = new
+                {
+                    loginStatus = "Username doesn't exist.",
+                };
+                client.PostAsJsonAsync("https://localhost:5173/", obj);
+                return Ok();
+            }
+
+            if (_service.CheckPassword(user, databaseUser))
+            {
+                HttpClient client = new HttpClient();
+                var obj = new
+                {
+                    loginStatus = "Login successful",
+                };
+                client.PostAsJsonAsync("https://localhost:5173/", obj);
+                return Ok();
+            }
+            else
+            {
+                HttpClient client = new HttpClient();
+                var obj = new
+                {
+                    loginStatus = "Password is incorrect",
+                };
+                client.PostAsJsonAsync("https://localhost:5173/", obj);
+                return Ok();
+                
+            }
+            
+            
+            
+            
         }
             
     }
