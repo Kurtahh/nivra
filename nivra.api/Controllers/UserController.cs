@@ -35,17 +35,17 @@ namespace backend.Controllers
             {
                 
                 Console.WriteLine("Username doesn't exist!");
-                return Ok(new [] {"Username doesn't exist!"});
+                return Ok(new [] {"Username doesn't exist!", "false"});
             }
 
             if (_service.CheckPassword(user, databaseUser))
             {
                 Console.WriteLine("Login successful!");
-                return Ok(new [] {"Login successful!"});
+                return Ok(new [] {"Login successful!", "true"});
             }
 
             Console.WriteLine("Password is not correct!");
-            return Ok(new [] {"Password is not correct!"});
+            return Ok(new [] {"Password is not correct!", "false"});
                 
 
 
