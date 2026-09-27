@@ -23,5 +23,20 @@ namespace backend.Controllers
             _service.SignUpUser(user);
             return Ok();
         }
+
+
+        [HttpPost]
+        [Route("Authenticate")]
+        public IActionResult AuthenticateUser(User user)
+        {
+            HttpClient client = new HttpClient();
+            var obj = new
+            {
+                loginStatus = "Login was successful",
+            };
+            client.PostAsJsonAsync("https://localhost:5173/", obj);
+            return Ok();
+        }
+            
     }
 }
