@@ -5,32 +5,27 @@ export default function LoginForm() {
     const  handleSubmit = async (e) => {
 
         e.preventDefault()
-        /*
-                    const response = await fetch('api/login'), {
-                        method: 'POST',
-                        headers: {
-                            'Content-type': 'application/json',
-                        },
-                        body: JSON.stringify({username, password})
-                    }
-        */
+        let passwordHash = password;
         
-        try {
-            const response = await fetch('api/DailySteps', {
-                method: 'GET',
-                headers: {
-                    'Content-type': 'application/json',
-                },
-            })
-
-            if (!response.ok) {
-                throw new Error('Login failed');
-            }
-
-            const data = await response.json()
-            console.log(data)
-        } catch {
-            throw new Error('Login failed');           
+        let items;
+        let dataIsLoaded;
+        await fetch("http://localhost:5207/api/User/Authenticate", {
+            method: "POST",
+            headers: {
+                'Content-type' : "application/json"
+            },
+            body: JSON.stringify({username, passwordHash})
+        }).then((res) => res.json())
+          .then((json) => {
+              items = json;
+              dataIsLoaded = true;
+          })
+        
+        
+        
+        
+        if (dataIsLoaded) {
+            console.log(items[0]);
         }
     }
     
