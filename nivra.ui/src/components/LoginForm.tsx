@@ -24,7 +24,7 @@ export default function LoginForm() {
         
         
         
-        if (dataIsLoaded) {
+        if (dataIsLoaded && items != null) {
             console.log(items[0]);
         }
     }
