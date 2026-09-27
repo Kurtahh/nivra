@@ -28,8 +28,8 @@ export default function LoginForm() {
         if (dataIsLoaded && items != null) {
             console.log(items[0]);
             if (items[1] === "true") {
-                let current_session = Session.instance;
-                current_session.login(username);
+                let currentSession = Session.instance;
+                currentSession.login(username);
             }
             
         }
