@@ -1,4 +1,5 @@
 import {useState} from "react";
+import {Session} from "../classes/Session.ts"
 
 export default function LoginForm() {
 
@@ -26,6 +27,11 @@ export default function LoginForm() {
         
         if (dataIsLoaded && items != null) {
             console.log(items[0]);
+            if (items[1] === "true") {
+                let current_session = new Session();
+                current_session.login(username);
+            }
+            
         }
     }
     

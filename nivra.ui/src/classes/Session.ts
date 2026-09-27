@@ -1,12 +1,12 @@
 
 
-class Session {
+export class Session {
     private username: String
-    private loginStatus: bool;
+    private loginStatus: Boolean;
    
    public constructor()  {
         this.username = ""
-        this.loginStatus = 0;
+        this.loginStatus = false;
    }
     
     public getUsername(): String {
@@ -15,7 +15,7 @@ class Session {
     
     public login( username: String) {
         
-       this.loginStatus = 1;
+       this.loginStatus = true;
        this.username = username;
        
        if (this.loginStatus) {
