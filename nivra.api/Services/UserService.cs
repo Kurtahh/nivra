@@ -24,6 +24,14 @@ namespace backend.Services{
             return _repository.GetUser(username);
 
         }
+
+
+        public bool CheckPassword(User inputUser, User databaseUser)
+        {
+             var hasher = new PasswordHasher<User>();
+             var passwordHash = hasher.HashPassword(inputUser, inputUser.PasswordHash);
+             return passwordHash == databaseUser?.PasswordHash;
+        }
     }   
     
     
