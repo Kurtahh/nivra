@@ -7,7 +7,7 @@ namespace backend.Models
         public int Id { get; set; }
         public DateOnly Date { get; set; }
         public int StepCount { get; set; }
-        public int UserId { get; set; }
+        public long UserId { get; set; }
     }
 }
 

@@ -19,7 +19,7 @@ namespace backend.Controllers
         {
             try
             {
-                _service.LogSteps(stepCount); //repository pattern
+                _service.LogSteps(stepCount, 1); // 1 - placeholder userId
                 return Ok();
             }
             catch(ArgumentException e)
