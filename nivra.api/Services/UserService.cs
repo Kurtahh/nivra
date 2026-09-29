@@ -25,7 +25,6 @@ namespace backend.Services{
 
         }
 
-
         public bool CheckPassword(User inputUser, User databaseUser)
         {
              var hasher = new PasswordHasher<User>();

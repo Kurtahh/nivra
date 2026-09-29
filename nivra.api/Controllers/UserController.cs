@@ -2,7 +2,6 @@ using backend.Models;
 using backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace backend.Controllers
 {
     [Route("api/[controller]")]
@@ -16,7 +15,6 @@ namespace backend.Controllers
             _service = service;
         }
 
-
         [HttpPost]
         public IActionResult CreateUserOnSignUp(User user)
         {
@@ -24,16 +22,13 @@ namespace backend.Controllers
             return Ok();
         }
 
-
         [HttpPost]
         [Route("Authenticate")]
         public IActionResult AuthenticateUser(User user)
         {
-            
             var databaseUser = _service.CheckIfUsernameExists(user.Username);
             if (databaseUser == null )
-            {
-                
+            {       
                 Console.WriteLine("Username doesn't exist!");
                 return Ok(new [] {"Username doesn't exist!", "false"});
             }
@@ -46,12 +41,6 @@ namespace backend.Controllers
 
             Console.WriteLine("Password is not correct!");
             return Ok(new [] {"Password is not correct!", "false"});
-                
-
-
-
-
         }
-            
     }
 }

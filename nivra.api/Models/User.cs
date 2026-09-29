@@ -1,8 +1,4 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.Mapping;
-
-
 
 namespace backend.Models
 {
