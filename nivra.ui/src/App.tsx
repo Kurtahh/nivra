@@ -2,6 +2,7 @@ import './App.css';
 import LoginForm from './components/LoginForm.tsx';
 import Home from './components/Home.tsx';
 import SignUpForm from "./components/SignUpForm.tsx";
+import InputSteps from "./components/InputSteps.tsx";
 
 import {BrowserRouter, Routes, Route, Link} from 'react-router-dom';
 
@@ -15,7 +16,7 @@ export default function App() {
               <Link to="/signup">Sign Up</Link>
           </nav>
           <Routes>
-              <Route path="/" element={<Home />}></Route>
+              <Route path="/" element={<><Home /><InputSteps /></>}></Route>
               <Route path="/login" element={<LoginForm />}> </Route>
               <Route path="/signup" element={<SignUpForm />}> </Route>
           </Routes>

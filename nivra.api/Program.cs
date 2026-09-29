@@ -1,4 +1,5 @@
-using backend.Models;
+using backend.Repositories;
+using backend.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +20,10 @@ builder.Services.AddDbContext<AppDbContext>((DbContextOptionsBuilder options) =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<StepsRepository>();
+builder.Services.AddScoped<StepEntryRepo>();
+builder.Services.AddScoped<StepEntryService>();
+builder.Services.AddScoped<UserRepo>();
+builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
 
