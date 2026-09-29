@@ -21,6 +21,7 @@ namespace backend.Repositories
             _context.Add(entry);
             _context.SaveChanges();
         }
+        
         public void Update(StepEntry entry)
         {
             _context.StepEntries.Update(entry);

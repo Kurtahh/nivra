@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.Mapping;
-
 namespace backend.Models
 {
     public class StepEntry{
