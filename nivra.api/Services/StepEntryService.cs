@@ -39,7 +39,7 @@ namespace backend.Services{
 
         public void LogSteps(int stepCount, long userId)
         {
-            ValidateMinimumSteps(1, stepCount); // 1 is the minimum amount of steps
+            ValidateMinimumSteps(0, stepCount); // minimum is 0 (not including 0) 
 
             var currentDate = DateOnly.FromDateTime(DateTime.Now);
             StepEntry? oldStepEntry = _repository.EntryByDate(currentDate, userId);
