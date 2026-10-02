@@ -47,7 +47,7 @@ namespace backend.Controllers
 
 
         [HttpGet]
-        [Route("/{id:long}")]
+        [Route("TodaySteps/{id:long}")]
         public int GetTodaySteps(long id)
         {
             return _stepsService.GetTodaySteps(id);
