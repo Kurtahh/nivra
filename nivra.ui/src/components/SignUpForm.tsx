@@ -1,8 +1,6 @@
-
 import {useState} from 'react'
+
 export default function SignUpForm() {
-
-
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     
@@ -24,13 +22,11 @@ export default function SignUpForm() {
     }
     
     function handleUsernameChange(e) {
-
         setUsername(e.target.value)
     }
     
     function handlePasswordChange(e) {
         setPassword(e.target.value)
-        
     }
 
     

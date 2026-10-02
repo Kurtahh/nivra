@@ -22,9 +22,6 @@ export default function LoginForm() {
               dataIsLoaded = true;
           })
         
-        
-        
-        
         if (dataIsLoaded && items != null) {
             console.log(items[0]);
             if (items[1] === "true") {
@@ -39,13 +36,11 @@ export default function LoginForm() {
     const [password, setPassword] = useState("")
     
     function handleUsernameChange(e) {
-
         setUsername(e.target.value)
     }
 
     function handlePasswordChange(e) {
         setPassword(e.target.value)
-
     }
 
     return (
