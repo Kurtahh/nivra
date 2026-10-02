@@ -38,6 +38,12 @@ namespace backend.Services{
              
              return false;
         }
+
+
+        public User? GetUserByName(string name)
+        {
+            return _repository.GetUser(name);
+        }
     }   
     
     
