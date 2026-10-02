@@ -9,10 +9,12 @@ namespace backend.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _service;
+        private readonly StepEntryService _stepsService;
 
-        public UserController(UserService service)
+        public UserController(UserService service, StepEntryService serviceStepEntry)
         {
             _service = service;
+            _stepsService = serviceStepEntry;
         }
 
         [HttpPost]
@@ -41,6 +43,14 @@ namespace backend.Controllers
 
             Console.WriteLine("Password is not correct!");
             return Ok(new [] {"Password is not correct!", "false"});
+        }
+
+
+        [HttpGet]
+        [Route("/{id:long}")]
+        public int GetTodaySteps(long id)
+        {
+            return _stepsService.GetTodaySteps(id);
         }
     }
 }
