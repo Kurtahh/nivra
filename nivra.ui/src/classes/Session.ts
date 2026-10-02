@@ -5,6 +5,7 @@ export class Session {
     private username: String
     private loginStatus: Boolean;
     private id: Number;
+    private todaySteps: Number;
    
    private constructor()  {
         this.username = ""
@@ -30,5 +31,24 @@ export class Session {
        this.id = id;
        
        
+    }
+    
+    public async  getTodaySteps(id: Number) {
+       let items
+       let dataLoaded
+       await fetch("http://localhost:5027/api/User/TodaySteps/" + id, {
+           method: "GET",
+           headers: {'Content-type': 'json/application'}
+       }).then( (res) => 
+           res.json()
+       ).then((json) => {
+           items = json
+           dataLoaded = true 
+       }
+          
+       )
+        if (dataLoaded && items != null) {
+            this.todaySteps = items[0]
+        }
     }
 }
