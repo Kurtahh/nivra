@@ -10,6 +10,7 @@ namespace backend.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _service;
+        private readonly StepEntryService _stepsService;
 
         public UserController(UserService service)
         {
@@ -46,8 +47,6 @@ namespace backend.Controllers
 
             Console.WriteLine("Password is not correct!");
             return Ok(new [] {"Password is not correct!", "false"});
-                
-
 
 
 
