@@ -10,6 +10,8 @@ export class Session {
    private constructor()  {
         this.username = ""
         this.loginStatus = false;
+        this.id = 0;
+        this.todaySteps = 0;
    }
    
    
@@ -24,15 +26,21 @@ export class Session {
         return this.username;
     }
     
-    public login( username: String, id: Number) {
+    public getTodaySteps(): Number {
+       return this.todaySteps;
+    }
+    
+    public async login( username: String, id: Number) {
         
        this.loginStatus = true;
        this.username = username;
        this.id = id;
-       this.getTodaySteps(id)
+       this.todaySteps = await this.fetchTodaySteps(id).then(num => {
+           return num
+       })
     }
     
-    public async  getTodaySteps(id: Number) {
+    public async  fetchTodaySteps(id: Number): Promise<Number> {
         
        var items;
        await fetch(`http://localhost:5207/api/User/TodaySteps/${id}`).then(
@@ -45,7 +53,10 @@ export class Session {
         
         
         if (items != null) {
-            console.log(items)
+            return items
+            
         }
+        
+        return 0;
     }
 }
