@@ -29,10 +29,23 @@ export class Session {
        this.loginStatus = true;
        this.username = username;
        this.id = id;
-       console.log(id);
+       this.getTodaySteps(id)
     }
     
     public async  getTodaySteps(id: Number) {
         
+       var items;
+       await fetch(`http://localhost:5207/api/User/TodaySteps/${id}`).then(
+           res => res.json()
+       ).then(
+           json => {
+               items = json
+           }
+       )
+        
+        
+        if (items != null) {
+            console.log(items)
+        }
     }
 }
