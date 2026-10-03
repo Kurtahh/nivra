@@ -33,5 +33,6 @@ export class Session {
     }
     
     public async  getTodaySteps(id: Number) {
-    
+        
     }
+}
