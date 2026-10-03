@@ -29,26 +29,9 @@ export class Session {
        this.loginStatus = true;
        this.username = username;
        this.id = id;
-       
-       
+       console.log(id);
     }
     
     public async  getTodaySteps(id: Number) {
-       let items
-       let dataLoaded
-       await fetch("http://localhost:5027/api/User/TodaySteps/" + id, {
-           method: "GET",
-           headers: {'Content-type': 'json/application'}
-       }).then( (res) => 
-           res.json()
-       ).then((json) => {
-           items = json
-           dataLoaded = true 
-       }
-          
-       )
-        if (dataLoaded && items != null) {
-            this.todaySteps = items[0]
-        }
+    
     }
-}
