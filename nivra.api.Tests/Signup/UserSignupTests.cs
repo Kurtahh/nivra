@@ -1,7 +1,9 @@
+using backend.Controllers;
 using backend.Enums;
 using backend.Models;
 using backend.Repositories;
 using backend.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace nivra.api.Tests.Signup;
@@ -217,6 +219,35 @@ public class UserSignupTests
 
         Assert.Equal(Status.Failure, value);
 
+    }
+
+    [Fact]
+    public async Task ControllerReturnsConflictIfSignupFailed()
+    {
+
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+
+        var context = new AppDbContext(options);
+        var repository = new UserRepo(context);
+        var repositorySteps = new StepEntryRepo(context);
+        var service = new UserService(repository);
+        var serviceStep = new StepEntryService(repositorySteps);
+        var controller = new UserController(service, serviceStep);
+        
+        var user = new User
+        {
+            Username = "vincent",
+            PasswordHash = "adfaf",
+        };
+
+        controller.CreateUserOnSignUp(user);
+        var result = controller.CreateUserOnSignUp(user);
+        
+
+        var conflict= Assert.IsType<ConflictObjectResult>(result);
+        Assert.Equal(409, conflict.StatusCode);
     }
     
     
