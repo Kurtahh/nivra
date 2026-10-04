@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.JavaScript;
 using backend.Models;
 using backend.Repositories;
 
@@ -48,6 +49,14 @@ namespace backend.Services{
                 CreateAndSaveEntry(stepCount, userId, currentDate);
             else
                 OverrideEntrySteps(oldStepEntry, stepCount);
+        }
+
+        public int GetTodaySteps(long id)
+        {
+
+            var dateNow = DateOnly.FromDateTime(DateTime.Now);
+            var entry = _repository.EntryByDate(dateNow, id);
+            return entry?.StepCount ?? 0;
         }
     }   
 }
