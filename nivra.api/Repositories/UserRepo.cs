@@ -1,3 +1,4 @@
+using backend.Enums;
 using backend.Models;
 
 
@@ -13,10 +14,18 @@ namespace backend.Repositories
         }
 
 
-        public void Add(User user)
+        public Status Add(User user)
         {
-            _context.Add(user);
-            _context.SaveChanges();
+            var databaseUser = GetUser(user.Username);
+            if (databaseUser == null)
+            {
+                
+                _context.Add(user);
+                _context.SaveChanges();
+                return Status.Success;
+            }
+
+            return Status.Failure;
         }
 
 
