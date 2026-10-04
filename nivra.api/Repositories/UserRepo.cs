@@ -31,7 +31,7 @@ namespace backend.Repositories
 
         public User? GetUser(string username)
         {
-             return _context.Users.SingleOrDefault(u => u.Username == username);
+             return _context.Users.FirstOrDefault(u => u.Username == username);
         }
     } 
 }

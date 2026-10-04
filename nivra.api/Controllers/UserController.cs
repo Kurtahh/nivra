@@ -25,7 +25,10 @@ namespace backend.Controllers
 
             if (_service.SignUpUser(user) == Status.Failure)
             {
-                return Conflict("Username already exist or you entered not secure password!");
+                return Conflict(new
+                {
+                   message = "Username already exist or you entered not secure password!"
+                });
             }
             return Ok("Sign up was successful");
         }
