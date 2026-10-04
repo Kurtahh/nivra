@@ -17,7 +17,7 @@ namespace backend.Repositories
         public Status Add(User user)
         {
             var databaseUser = GetUser(user.Username);
-            if (databaseUser == null)
+            if (databaseUser == null && user.Username != "" && user.PasswordHash != "")
             {
                 
                 _context.Add(user);

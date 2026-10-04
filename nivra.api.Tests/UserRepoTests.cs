@@ -51,7 +51,7 @@ public class UserRepoTests
             PasswordHash = "adfaf",
             Id = 3
         };
-        context.Add(user);
+        repository.Add(user);
 
         repository.Add(user);
 
@@ -61,7 +61,7 @@ public class UserRepoTests
     }
     
     [Fact]
-    public async Task ReturnEnumWithSuccessValue()
+    public async Task ReturnsEnumWithSuccessValueIfSignInSuccessful()
     {
         
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -90,5 +90,82 @@ public class UserRepoTests
         Assert.Equal(Status.Success, value);
     }
     
+    
+    [Fact]
+    public async Task ReturnsEnumWithFailureValue()
+    {
+        
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+
+        var context = new AppDbContext(options);
+        var repository = new UserRepo(context);
+
+        var user = new User
+        {
+            Username = "vincent",
+            CreatedAt = DateTime.Now,
+            PasswordHash = "adfaf",
+            Id = 3
+        };
+
+        var value = repository.Add(user);
+
+        Assert.Equal(Status.Success, value);
+        value = repository.Add(user);
+        Assert.Equal(Status.Failure, value);
+
+    }
+    
+    [Fact]
+    public async Task AddDoesntLetSaveEmptyUsername()
+    {
+        
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+
+        var context = new AppDbContext(options);
+        var repository = new UserRepo(context);
+
+        var user = new User
+        {
+            Username = "",
+            CreatedAt = DateTime.Now,
+            PasswordHash = "adfaf",
+            Id = 3
+        };
+
+        var value = repository.Add(user);
+
+        Assert.Equal(Status.Failure, value);
+
+    }
+    
+    [Fact]
+    public async Task AddDoesntLetSaveEmptyPassword()
+    {
+        
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+
+        var context = new AppDbContext(options);
+        var repository = new UserRepo(context);
+
+        var user = new User
+        {
+            Username = "Name",
+            CreatedAt = DateTime.Now,
+            PasswordHash = "",
+            Id = 3
+        };
+
+        var value = repository.Add(user);
+
+        Assert.Equal(Status.Failure, value);
+
+    }
     
 }
