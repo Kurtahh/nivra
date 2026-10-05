@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Session } from "../classes/Session";
 
 export default function InputSteps() {
     const [steps, setSteps] = useState("")
@@ -9,12 +10,16 @@ export default function InputSteps() {
         const response = await fetch('http://localhost:5207/api/Steps', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(Number(steps))
+            body: JSON.stringify({ 
+                stepCount: Number(steps),
+                userId: Number(Session.instance.getId())
+            }) 
         });
 
         if (response.ok) {
             setSteps("")
             setErrorMsg("")
+            //Session.instance.fetchTodaySteps();
         }
         else {
             const msg = await response.text();

@@ -1,5 +1,6 @@
 using backend.Services;
 using Microsoft.AspNetCore.Mvc;
+using backend.Models.Requests;
 
 namespace backend.Controllers
 {
@@ -15,11 +16,11 @@ namespace backend.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateStepEntry([FromBody] int stepCount)
+        public IActionResult CreateStepEntry([FromBody] CreateStepEntryRequest body)
         {
             try
             {
-                _service.LogSteps(stepCount, 18); // 18 - placeholder userId
+                _service.LogSteps(body.StepCount, body.UserId);
                 return Ok();
             }
             catch(ArgumentException e)
