@@ -9,9 +9,9 @@ namespace backend.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _service;
-        private readonly StepEntryService _stepsService;
+        private readonly StepsService _stepsService;
 
-        public UserController(UserService service, StepEntryService serviceStepEntry)
+        public UserController(UserService service, StepsService serviceStepEntry)
         {
             _service = service;
             _stepsService = serviceStepEntry;

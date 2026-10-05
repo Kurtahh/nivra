@@ -5,11 +5,11 @@ namespace backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StepEntryController : ControllerBase
+    public class StepsController : ControllerBase
     {
-        private readonly StepEntryService _service;
+        private readonly StepsService _service;
 
-        public StepEntryController(StepEntryService service)
+        public StepsController(StepsService service)
         {
             _service = service;
         }
@@ -19,7 +19,7 @@ namespace backend.Controllers
         {
             try
             {
-                _service.LogSteps(stepCount, 1); // 1 - placeholder userId
+                _service.LogSteps(stepCount, 18); // 18 - placeholder userId
                 return Ok();
             }
             catch(ArgumentException e)

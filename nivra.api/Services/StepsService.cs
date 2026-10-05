@@ -3,11 +3,11 @@ using backend.Models;
 using backend.Repositories;
 
 namespace backend.Services{
-    public class StepEntryService
+    public class StepsService
     {
-        private readonly StepEntryRepo _repository;
+        private readonly StepsRepo _repository;
 
-        public StepEntryService(StepEntryRepo repository)
+        public StepsService(StepsRepo repository)
         {
             _repository = repository;
         }
