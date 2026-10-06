@@ -5,7 +5,7 @@ export class Session {
     private username: String
     private loginStatus: Boolean;
     private id: Number;
-    private todaySteps: Number;
+    private todaySteps: number;
    
    private constructor()  {
         this.username = ""
@@ -21,12 +21,16 @@ export class Session {
        }
        return Session.#instance;
    }
-    
+   
+    public getId(): Number {
+        return this.id;
+    }
+
     public getUsername(): String {
         return this.username;
     }
     
-    public getTodaySteps(): Number {
+    public getTodaySteps(): number {
        return this.todaySteps;
     }
     
@@ -35,27 +39,24 @@ export class Session {
        this.loginStatus = true;
        this.username = username;
        this.id = id;
-       this.todaySteps = await this.fetchTodaySteps(id).then(num => {
+       this.todaySteps = await this.fetchTodaySteps().then(num => {
            return num
        })
     }
     
-    public async  fetchTodaySteps(id: Number): Promise<Number> {
-        
-       var items;
-       await fetch(`http://localhost:5207/api/User/TodaySteps/${id}`).then(
+    public async  fetchTodaySteps(): Promise<number> {
+
+        var items;
+        await fetch(`http://localhost:5207/api/User/TodaySteps/${Session.instance.id}`).then(
            res => res.json()
-       ).then(
+        ).then(
            json => {
                items = json
            }
-       )
+        )
         
-        
-        if (items != null) {
-            return items
-            
-        }
+        if (items != null)
+            return items           
         
         return 0;
     }

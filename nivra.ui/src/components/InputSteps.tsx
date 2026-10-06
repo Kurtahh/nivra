@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Session } from "../classes/Session";
 
-export default function InputSteps() {
+type Props = { onStepsLogged: (value: number) => void };
+
+export default function InputSteps({onStepsLogged}: Props) {
     const [steps, setSteps] = useState("")
     const [errorMsg, setErrorMsg] = useState("")
 
@@ -19,7 +21,9 @@ export default function InputSteps() {
         if (response.ok) {
             setSteps("")
             setErrorMsg("")
-            //Session.instance.fetchTodaySteps();
+
+            const newSteps = await Session.instance.fetchTodaySteps();
+            onStepsLogged(newSteps);
         }
         else {
             const msg = await response.text();
