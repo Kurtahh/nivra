@@ -1,3 +1,4 @@
+using backend.Enums;
 using backend.Models;
 
 
@@ -13,16 +14,24 @@ namespace backend.Repositories
         }
 
 
-        public void Add(User user)
+        public Status Add(User user)
         {
-            _context.Add(user);
-            _context.SaveChanges();
+            var databaseUser = GetUser(user.Username);
+            if (databaseUser == null && user.Username != "" && user.PasswordHash != "")
+            {
+                
+                _context.Add(user);
+                _context.SaveChanges();
+                return Status.Success;
+            }
+
+            return Status.Failure;
         }
 
 
         public User? GetUser(string username)
         {
-             return _context.Users.SingleOrDefault(u => u.Username == username);
+             return _context.Users.FirstOrDefault(u => u.Username == username);
         }
     } 
 }

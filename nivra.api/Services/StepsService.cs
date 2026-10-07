@@ -1,12 +1,13 @@
+using System.Runtime.InteropServices.JavaScript;
 using backend.Models;
 using backend.Repositories;
 
 namespace backend.Services{
-    public class StepEntryService
+    public class StepsService
     {
-        private readonly StepEntryRepo _repository;
+        private readonly StepsRepo _repository;
 
-        public StepEntryService(StepEntryRepo repository)
+        public StepsService(StepsRepo repository)
         {
             _repository = repository;
         }
@@ -48,6 +49,14 @@ namespace backend.Services{
                 CreateAndSaveEntry(stepCount, userId, currentDate);
             else
                 OverrideEntrySteps(oldStepEntry, stepCount);
+        }
+
+        public int GetTodaySteps(long id)
+        {
+
+            var dateNow = DateOnly.FromDateTime(DateTime.Now);
+            var entry = _repository.EntryByDate(dateNow, id);
+            return entry?.StepCount ?? 0;
         }
     }   
 }

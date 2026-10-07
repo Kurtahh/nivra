@@ -26,7 +26,7 @@ export default function LoginForm() {
             console.log(items[0]);
             if (items[1] === "true") {
                 let currentSession = Session.instance;
-                currentSession.login(username);
+                currentSession.login(username, items[2]);
             }
             
         }

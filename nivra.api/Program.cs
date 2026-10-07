@@ -20,8 +20,8 @@ builder.Services.AddDbContext<AppDbContext>((DbContextOptionsBuilder options) =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<StepEntryRepo>();
-builder.Services.AddScoped<StepEntryService>();
+builder.Services.AddScoped<StepsRepo>();
+builder.Services.AddScoped<StepsService>();
 builder.Services.AddScoped<UserRepo>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<LeaderboardRepo>();

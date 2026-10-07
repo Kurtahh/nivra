@@ -1,3 +1,4 @@
+using backend.Enums;
 using backend.Models;
 using backend.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -9,17 +10,27 @@ namespace backend.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _service;
+        private readonly StepsService _stepsService;
 
-        public UserController(UserService service)
+        public UserController(UserService service, StepsService serviceStepEntry)
         {
             _service = service;
+            _stepsService = serviceStepEntry;
         }
 
         [HttpPost]
         public IActionResult CreateUserOnSignUp(User user)
         {
-            _service.SignUpUser(user);
-            return Ok();
+
+
+            if (_service.SignUpUser(user) == Status.Failure)
+            {
+                return Conflict(new
+                {
+                   message = "Username already exist or you entered not secure password!"
+                });
+            }
+            return Ok("Sign up was successful");
         }
 
         [HttpPost]
@@ -36,11 +47,19 @@ namespace backend.Controllers
             if (_service.CheckPassword(user, databaseUser))
             {
                 Console.WriteLine("Login successful!");
-                return Ok(new [] {"Login successful!", "true"});
+                return Ok(new [] {"Login successful!", "true", databaseUser.Id.ToString()});
             }
 
             Console.WriteLine("Password is not correct!");
             return Ok(new [] {"Password is not correct!", "false"});
+        }
+
+
+        [HttpGet]
+        [Route("TodaySteps/{id:long}")]
+        public int GetTodaySteps(long id)
+        {
+            return _stepsService.GetTodaySteps(id);
         }
     }
 }

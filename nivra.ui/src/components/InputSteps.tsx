@@ -1,20 +1,29 @@
 import { useState } from "react";
+import { Session } from "../classes/Session";
 
-export default function InputSteps() {
+type Props = { onStepsLogged: (value: number) => void };
+
+export default function InputSteps({onStepsLogged}: Props) {
     const [steps, setSteps] = useState("")
     const [errorMsg, setErrorMsg] = useState("")
 
     async function handleSubmit(e) {
         e.preventDefault()
-        const response = await fetch('http://localhost:5207/api/StepEntry', {
+        const response = await fetch('http://localhost:5207/api/Steps', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(Number(steps))
+            body: JSON.stringify({ 
+                stepCount: Number(steps),
+                userId: Number(Session.instance.getId())
+            }) 
         });
 
         if (response.ok) {
             setSteps("")
             setErrorMsg("")
+
+            const newSteps = await Session.instance.fetchTodaySteps();
+            onStepsLogged(newSteps);
         }
         else {
             const msg = await response.text();
