@@ -24,6 +24,8 @@ builder.Services.AddScoped<StepEntryRepo>();
 builder.Services.AddScoped<StepEntryService>();
 builder.Services.AddScoped<UserRepo>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<LeaderboardRepo>();
+builder.Services.AddScoped<LeaderboardService>();
 
 var app = builder.Build();
 
