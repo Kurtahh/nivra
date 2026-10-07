@@ -1,3 +1,4 @@
+using backend.Enums;
 using backend.Models;
 using backend.Repositories;
 using Microsoft.AspNetCore.Identity;
@@ -12,11 +13,11 @@ namespace backend.Services{
             _repository = repository;
         }
 
-        public void SignUpUser(User user)
+        public Status SignUpUser(User user)
         {
             PasswordHasher<User> hasher = new PasswordHasher<User>();
             user.PasswordHash = hasher.HashPassword(user, user.PasswordHash);
-            _repository.Add(user);
+            return _repository.Add(user);
         }
 
         public User? CheckIfUsernameExists(string username)

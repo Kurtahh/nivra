@@ -1,25 +1,26 @@
 using backend.Services;
 using Microsoft.AspNetCore.Mvc;
+using backend.Models.Requests;
 
 namespace backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StepEntryController : ControllerBase
+    public class StepsController : ControllerBase
     {
-        private readonly StepEntryService _service;
+        private readonly StepsService _service;
 
-        public StepEntryController(StepEntryService service)
+        public StepsController(StepsService service)
         {
             _service = service;
         }
 
         [HttpPost]
-        public IActionResult CreateStepEntry([FromBody] int stepCount)
+        public IActionResult CreateStepEntry([FromBody] CreateStepEntryRequest body)
         {
             try
             {
-                _service.LogSteps(stepCount, 1); // 1 - placeholder userId
+                _service.LogSteps(body.StepCount, body.UserId);
                 return Ok();
             }
             catch(ArgumentException e)
