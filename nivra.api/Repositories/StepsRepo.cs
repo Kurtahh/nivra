@@ -2,11 +2,11 @@ using backend.Models;
 
 namespace backend.Repositories
 {
-    public class StepEntryRepo
+    public class StepsRepo
     {
         private readonly AppDbContext _context;
         
-        public StepEntryRepo(AppDbContext context)
+        public StepsRepo(AppDbContext context)
         {
             _context = context;
         }

@@ -231,9 +231,9 @@ public class UserSignupTests
 
         var context = new AppDbContext(options);
         var repository = new UserRepo(context);
-        var repositorySteps = new StepEntryRepo(context);
+        var repositorySteps = new StepsRepo(context);
         var service = new UserService(repository);
-        var serviceStep = new StepEntryService(repositorySteps);
+        var serviceStep = new StepsService(repositorySteps);
         var controller = new UserController(service, serviceStep);
         
         var user = new User
