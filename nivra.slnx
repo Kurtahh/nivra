@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/nivra.api/">
+    <Project Path="nivra.api/backend.csproj" />
+  </Folder>
+  <Project Path="nivra.api.Tests/nivra.api.Tests.csproj" />
+</Solution>
