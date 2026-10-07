@@ -14,17 +14,17 @@ namespace backend.Controllers
             _service = service;
         }
 
-        [HttpPost]
-        public IActionResult GetTip()
+        [HttpGet]
+        public IActionResult GetRandomTip()
         {
             try
             {
-                _service.GetRandomTip();
-                return Ok();
+                var tip = _service.GetRandomTip();
+                return Ok(tip);
             }
             catch(ArgumentException e)
             {
-                return BadRequest(e.Message);
+                return NotFound(e.Message);
             }
         }
     }
