@@ -11,15 +11,15 @@ export default function App() {
   return (
       <BrowserRouter>
           <nav style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
-              <Link to="/">Home</Link>
-              <Link to="/login">Login</Link>
+              <Link to="/">Login</Link>
               <Link to="/signup">Sign Up</Link>
+              <Link to="/home">Home</Link>
               <Link to="/leaderboard">Leaderboard</Link>
           </nav>
           <Routes>
-              <Route path="/" element={<><Home /></>}></Route>
-              <Route path="/login" element={<LoginForm />}> </Route>
+              <Route path="/" element={<><LoginForm /></>}></Route>
               <Route path="/signup" element={<SignUpForm />}> </Route>
+              <Route path="/home" element={<Home />}> </Route>
               <Route path="/leaderboard" element={<Leaderboard /> }> </Route>
           </Routes>
           
