@@ -2,6 +2,7 @@ using backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.Enums;
+using backend.Extensions;
 
 public class AppDbContext : DbContext
 {
@@ -15,7 +16,7 @@ public class AppDbContext : DbContext
     {
         var categoryConverter = new ValueConverter<TipCategory, string>(
             category => category.ToString(),
-            text => Enum.Parse<TipCategory>(text, ignoreCase: true));
+            text => text.ToTipCategory());
 
         modelBuilder.Entity<HealthTip>()
             .Property(t=>t.Category)

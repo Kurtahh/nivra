@@ -1,5 +1,6 @@
 using backend.Services;
 using Microsoft.AspNetCore.Mvc;
+using backend.Exceptions;
 
 namespace backend.Controllers
 {
@@ -25,6 +26,10 @@ namespace backend.Controllers
             catch(ArgumentException e)
             {
                 return NotFound(e.Message);
+            }
+            catch (InvalidTipCategoryException e)
+            {
+                return StatusCode(500, e.Message);
             }
         }
     }
