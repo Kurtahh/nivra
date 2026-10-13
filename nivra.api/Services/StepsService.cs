@@ -15,7 +15,7 @@ namespace backend.Services{
         {
             if(stepCount <= minStepCount)
             {
-                throw new ArgumentException("Jūsų žingsnių kiekis privalo viršyti " + minStepCount.ToString());
+                throw new ArgumentException("Your step count must exceed " + minStepCount.ToString());
             }
         }
 

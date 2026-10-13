@@ -34,7 +34,7 @@ export default function InputSteps({onStepsLogged}: Props) {
     return (
         <div className="centered-form">
             <label>
-                Įveskite nueitų žingsnių kiekį
+                Input your steps taken today:
             </label>
             <br/>
             <form onSubmit={handleSubmit}>
@@ -44,7 +44,7 @@ export default function InputSteps({onStepsLogged}: Props) {
                     onChange={(e) => setSteps(e.target.value)}
                 />
                 <button>
-                    Įrašyti
+                    Submit
                 </button>
             </form>
             <p>
