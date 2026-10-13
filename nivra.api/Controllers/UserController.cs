@@ -21,8 +21,6 @@ namespace backend.Controllers
         [HttpPost]
         public IActionResult CreateUserOnSignUp(User user)
         {
-
-
             if (_service.SignUpUser(user) == Status.Failure)
             {
                 return Conflict(new
