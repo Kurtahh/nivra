@@ -22,11 +22,6 @@ export default function SignUpForm() {
             }
         )
         
-        
-        
-        
-        
-        
     }
     
     function handleUsernameChange(e) {

@@ -1,8 +1,9 @@
 import {useState} from "react";
+import {useNavigate} from "react-router-dom";
 import {Session} from "../classes/Session.ts"
 
 export default function LoginForm() {
-
+    let navigate = useNavigate();
     const  handleSubmit = async (e) => {
 
         e.preventDefault()
@@ -27,6 +28,7 @@ export default function LoginForm() {
             if (items[1] === "true") {
                 let currentSession = Session.instance;
                 currentSession.login(username, items[2]);
+                navigate("/home");
             }
             
         }
