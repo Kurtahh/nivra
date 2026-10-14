@@ -2,27 +2,30 @@ import './App.css';
 import LoginForm from './components/LoginForm.tsx';
 import Home from './components/Home.tsx';
 import SignUpForm from "./components/SignUpForm.tsx";
+import { homePath, leaderboardPath, signupPath, loginPath } from "./Paths.ts"
+import Layout from "./components/Layout.tsx";
 
-import {BrowserRouter, Routes, Route, Link} from 'react-router-dom';
-import {Leaderboard} from "./components/Leaderboard.tsx";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Leaderboard } from "./components/Leaderboard.tsx";
+
+const postLoginRoutes: [string, string][] = [
+    [homePath, "Home"],
+    [leaderboardPath, "Leaderboard"]
+];
 
 export default function App() {
-    
-  return (
-      <BrowserRouter>
-          <nav style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
-              <Link to="/">Home</Link>
-              <Link to="/login">Login</Link>
-              <Link to="/signup">Sign Up</Link>
-              <Link to="/leaderboard">Leaderboard</Link>
-          </nav>
-          <Routes>
-              <Route path="/" element={<><Home /></>}></Route>
-              <Route path="/login" element={<LoginForm />}> </Route>
-              <Route path="/signup" element={<SignUpForm />}> </Route>
-              <Route path="/leaderboard" element={<Leaderboard /> }> </Route>
-          </Routes>
-          
-      </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path={loginPath} element={<LoginForm />} />
+                <Route element={<Layout routes={[[loginPath, "Login"]]} />} >
+                    <Route path={signupPath} element={<SignUpForm />} />
+                </Route>
+                <Route element={<Layout routes={postLoginRoutes} />} >
+                    <Route path={homePath} element={<Home />} />
+                    <Route path={leaderboardPath} element={<Leaderboard />} />
+                </Route>
+            </Routes>
+        </BrowserRouter>
+    );
 }

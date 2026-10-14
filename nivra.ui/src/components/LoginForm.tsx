@@ -1,8 +1,10 @@
 import {useState} from "react";
+import { useNavigate, Link } from "react-router-dom";
 import {Session} from "../classes/Session.ts"
+import { homePath, signupPath } from "../Paths.ts"
 
 export default function LoginForm() {
-
+    let navigate = useNavigate();
     const  handleSubmit = async (e) => {
 
         e.preventDefault()
@@ -27,6 +29,7 @@ export default function LoginForm() {
             if (items[1] === "true") {
                 let currentSession = Session.instance;
                 currentSession.login(username, items[2]);
+                navigate(homePath);
             }
             
         }
@@ -53,6 +56,8 @@ export default function LoginForm() {
                 <input type="password" onChange={handlePasswordChange} value={password}></input> <br/><br/>
                 <input type="submit" value="Submit" onClick={handleSubmit}/>
             </form>
+            <br/>
+            <Link to={signupPath}>Don't have an account yet?</Link>
         </div>
     );
 

@@ -9,7 +9,7 @@ export default function Home() {
     return (
         <div className="header">
             <h1> Nivra</h1>
-            <p>Sveiki {currentSession.getUsername()!} Today steps: {todaySteps.toString()}</p>
+            <p>Hello {currentSession.getUsername()!}, you've taken {todaySteps.toString()} steps today</p>
             <InputSteps onStepsLogged={setTodaySteps} />
         </div>
     );
