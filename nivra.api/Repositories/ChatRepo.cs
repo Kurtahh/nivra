@@ -3,7 +3,7 @@ using backend.Models;
 
 namespace backend.Repositories
 {
-    public class ChatRepo
+    public class ChatRepo 
     {
     
         private readonly AppDbContext _context;
@@ -19,7 +19,15 @@ namespace backend.Repositories
             {
                 return Status.Failure;
             }
-            _context.Add(message);
+
+            try
+            {
+                _context.Chat.Add(message);
+            }
+            catch (Exception e)
+            {
+                return Status.Failure;
+            }
             return Status.Success;
         }
 

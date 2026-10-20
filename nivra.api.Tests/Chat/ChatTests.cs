@@ -113,6 +113,37 @@ public class ChatTests
         Assert.Equal(Status.Failure, value);
     }
     
+    [Fact]
+    public async Task AddFailsWhenMessageAlreadyExists()
+    {
+        
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+
+        var context = new AppDbContext(options);
+        var repository = new ChatRepo(context);
+        var chatMessage = new Chat
+        {
+            Id = 4,
+            DateT = default,
+            Message = "abc",
+            UserId = 0
+        };
+        var chatMessage2= new Chat
+        {
+            Id = 4,
+            DateT = default,
+            Message = "abcdef",
+            UserId = 0
+        };
+        
+        var value = repository.Add(chatMessage);
+        Assert.Equal(Status.Success, value);
+        value = repository.Add(chatMessage2);
+        Assert.Equal(Status.Failure, value);
+        
+    }
     
     
 }
