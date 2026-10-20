@@ -17,7 +17,7 @@ namespace backend.Repositories
         {
             
             
-            if (message.Message == "") 
+            if (string.IsNullOrEmpty(message.Message) || string.IsNullOrWhiteSpace(message.Message)) 
             {
                 return SendStatus.MessageIsEmpty;
             }

@@ -84,6 +84,54 @@ public class ChatTestsRepo
     }
     
     [Fact]
+    public async Task AddFailsWhenMessageIsNull()
+    {
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+
+        var context = new AppDbContext(options);
+        var repository = new ChatRepo(context);
+
+        var chatMessage = new Chat
+        {
+            Id = 4,
+            DateT = default,
+            Message = null,
+            UserId = 0
+        };
+
+        var value = repository.Add(chatMessage);
+
+        Assert.Equal(SendStatus.MessageIsEmpty, value);
+        Assert.Equal(0, context.Chat.Count());
+    }
+
+    [Fact]
+    public async Task AddFailsWhenMessageIsOnlyWhitespace()
+    {
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+
+        var context = new AppDbContext(options);
+        var repository = new ChatRepo(context);
+
+        var chatMessage = new Chat
+        {
+            Id = 4,
+            DateT = default,
+            Message = "     ",
+            UserId = 0
+        };
+
+        var value = repository.Add(chatMessage);
+
+        Assert.Equal(SendStatus.MessageIsEmpty, value);
+        Assert.Equal(0, context.Chat.Count());
+    }
+
+    [Fact]
     public async Task AddFailsWhenMessageIsLongerThan200Symbols()
     {
         

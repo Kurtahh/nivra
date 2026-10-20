@@ -96,6 +96,34 @@ public class ChatEndpointTests
     }
 
     [Fact]
+    public void SendMessage_ReturnsBadRequest_WhenMessageIsNull()
+    {
+        var (controller, context) = CreateController();
+        var message = ValidMessage();
+        message.Message = null;
+
+        var result = controller.SendUserMessage(message);
+
+        var badRequest = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal(400, badRequest.StatusCode);
+        Assert.Empty(context.Chat);
+    }
+
+    [Fact]
+    public void SendMessage_ReturnsBadRequest_WhenMessageIsOnlyWhitespace()
+    {
+        var (controller, context) = CreateController();
+        var message = ValidMessage();
+        message.Message = "     ";
+
+        var result = controller.SendUserMessage(message);
+
+        var badRequest = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal(400, badRequest.StatusCode);
+        Assert.Empty(context.Chat);
+    }
+
+    [Fact]
     public void SendMessage_StillReturnsOkAtExactly200Characters()
     {
         var (controller, context) = CreateController();
