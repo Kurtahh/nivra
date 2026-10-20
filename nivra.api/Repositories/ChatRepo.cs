@@ -1,13 +1,28 @@
-namespace backend.Repositories;
+using backend.Enums;
+using backend.Models;
 
-public class ChatRepo
+namespace backend.Repositories
 {
-    
-    private readonly AppDbContext _context;
-        
-    public ChatRepo(AppDbContext context)
+    public class ChatRepo
     {
-        _context = context;
-    }
     
+        private readonly AppDbContext _context;
+        
+        public ChatRepo(AppDbContext context)
+        {
+            _context = context;
+        }
+    
+        public Status Add(Chat message)
+        {
+            if (message.Message == "" || message.Message?.Length > 200)
+            {
+                return Status.Failure;
+            }
+            _context.Add(message);
+            return Status.Success;
+        }
+
+    
+    }
 }
