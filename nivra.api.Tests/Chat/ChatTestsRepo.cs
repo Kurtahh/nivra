@@ -1,14 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace nivra.api.Tests.Chat;
-using backend.Controllers;
 using backend.Enums;
 using backend.Models;
 using backend.Repositories;
-using backend.Services;
-using Microsoft.AspNetCore.Mvc;
 
-public class ChatTests
+public class ChatTestsRepo
 {
     
     [Fact]

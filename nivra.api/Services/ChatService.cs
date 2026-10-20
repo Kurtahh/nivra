@@ -15,7 +15,7 @@ namespace backend.Services
         }
 
 
-        Status SendMessageToChat(Chat message)
+        public Status SendMessageToChat(Chat message)
         {
             return _repository.Add(message);
         }
