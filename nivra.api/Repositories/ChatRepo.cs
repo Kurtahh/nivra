@@ -24,7 +24,7 @@ namespace backend.Repositories
             {
                 _context.Chat.Add(message);
             }
-            catch (Exception e)
+            catch 
             {
                 return Status.Failure;
             }

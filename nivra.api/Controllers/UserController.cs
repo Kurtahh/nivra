@@ -39,17 +39,16 @@ namespace backend.Controllers
             if (databaseUser == null )
             {       
                 Console.WriteLine("Username doesn't exist!");
-                return Ok(new [] {"Username doesn't exist!", "false"});
+                return NotFound(new [] {"Username doesn't exist!", "false"});
             }
 
-            if (_service.CheckPassword(user, databaseUser))
+            if (!_service.CheckPassword(user, databaseUser))
             {
-                Console.WriteLine("Login successful!");
-                return Ok(new [] {"Login successful!", "true", databaseUser.Id.ToString()});
+                Console.WriteLine("Password is not correct!");
+                return NotFound(new [] {"Password is not correct!", "false"});
             }
-
-            Console.WriteLine("Password is not correct!");
-            return Ok(new [] {"Password is not correct!", "false"});
+            Console.WriteLine("Login successful!");
+            return Ok(new [] {"Login successful!", "true", databaseUser.Id.ToString()});
         }
 
 
