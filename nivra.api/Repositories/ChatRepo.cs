@@ -13,22 +13,31 @@ namespace backend.Repositories
             _context = context;
         }
     
-        public Status Add(Chat message)
+        public SendStatus Add(Chat message)
         {
-            if (message.Message == "" || message.Message?.Length > 200)
+            
+            
+            if (message.Message == "") 
             {
-                return Status.Failure;
+                return SendStatus.MessageIsEmpty;
             }
 
+            if (message.Message?.Length > 200)
+            {
+                return SendStatus.MessageAbove200;
+            }
+            
             try
             {
                 _context.Chat.Add(message);
+                _context.SaveChanges();
             }
             catch 
             {
-                return Status.Failure;
+                return SendStatus.MessageAlreadyExists;
             }
-            return Status.Success;
+            
+            return SendStatus.Success;
         }
 
     

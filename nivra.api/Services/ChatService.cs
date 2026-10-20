@@ -15,8 +15,9 @@ namespace backend.Services
         }
 
 
-        public Status SendMessageToChat(Chat message)
+        public SendStatus SendMessageToChat(Chat message)
         {
+            message.DateT = DateTime.UtcNow;
             return _repository.Add(message);
         }
     }

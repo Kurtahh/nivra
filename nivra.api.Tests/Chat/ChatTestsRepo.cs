@@ -27,7 +27,7 @@ public class ChatTestsRepo
         };
         var value = repository.Add(chatMessage);
         
-        Assert.Equal(Status.Success, value);
+        Assert.Equal(SendStatus.Success, value);
         
     }
     
@@ -52,7 +52,7 @@ public class ChatTestsRepo
         };
         
         var value = repository.Add(chatMessage);
-        Assert.Equal(Status.Success, value);
+        Assert.Equal(SendStatus.Success, value);
 
         var savedChat = await context.Chat.FindAsync(4);
         Assert.NotNull(savedChat);
@@ -80,7 +80,7 @@ public class ChatTestsRepo
         
         var value = repository.Add(chatMessage);
 
-        Assert.Equal(Status.Failure, value);
+        Assert.Equal(SendStatus.MessageIsEmpty, value);
     }
     
     [Fact]
@@ -107,7 +107,7 @@ public class ChatTestsRepo
         
         var value = repository.Add(chatMessage);
 
-        Assert.Equal(Status.Failure, value);
+        Assert.Equal(SendStatus.MessageAbove200, value);
     }
     
     [Fact]
@@ -136,9 +136,9 @@ public class ChatTestsRepo
         };
         
         var value = repository.Add(chatMessage);
-        Assert.Equal(Status.Success, value);
+        Assert.Equal(SendStatus.Success, value);
         value = repository.Add(chatMessage2);
-        Assert.Equal(Status.Failure, value);
+        Assert.Equal(SendStatus.MessageAlreadyExists, value);
         
     }
     

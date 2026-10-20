@@ -29,7 +29,7 @@ public class ChatTestsService
         };
 
         var value = service.SendMessageToChat(chatMessage);
-        Assert.Equal(Status.Success, value);
+        Assert.Equal(SendStatus.Success, value);
 
     }
 }
