@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type HealthTip = {
     id: number;
@@ -8,22 +8,42 @@ type HealthTip = {
     sourceUrl: string | null;
 };
 
+const REFRESH_INTERVAL_MS = 30000;
+
 export default function HealthTipWidget() {
     const [tip, setTip] = useState<HealthTip | null>(null);
+    const [failed, setFailed] = useState(false);
 
-    useEffect(() => {
-        fetch("http://localhost:5207/api/HealthTip")
-            .then((res) => {
-                if (!res.ok) throw new Error("Failed to fetch health tip");
-                return res.json();
-            })
-            .then((data: HealthTip) => setTip(data))
-            .catch((err) => console.error("Error fetching health tip: ", err));
+    const loadTip = useCallback(async () => {
+        try {
+            const res = await fetch("http://localhost:5207/api/HealthTip");
+            if(!res.ok) throw new Error("Failed to fetch health tip");
+            const data: HealthTip = await res.json();
+            setTip(data);
+        } catch (err) {
+            console.error("Error fetching health tip: ", err);
+            setFailed(true);
+        }
     }, []);
 
+    useEffect(() => {
+        loadTip();
+        const timer = setInterval(loadTip, REFRESH_INTERVAL_MS);
+        return () => clearInterval(timer);
+    }, [loadTip]);
+
+    let text: string;
+    if (tip != null) {
+        text = tip.content;
+    } else if (failed) {
+        text = "Health tips are unavailable at the moment.";
+    } else {
+        text = "Loading a health tip...";
+    }
+
     return (
-        <div className="health-tip">
-            <p>{tip == null ? "Loading a health tip..." : tip.content}</p>
+        <div className="health-tip" onClick={loadTip} title="Click for another tip">
+            <p>{text}</p>
         </div>
     );
 }

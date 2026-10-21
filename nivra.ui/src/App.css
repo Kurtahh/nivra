@@ -34,4 +34,5 @@
 
 .health-tip p {
     margin: 0;
+    cursor: pointer;
 }
