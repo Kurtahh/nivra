@@ -45,10 +45,15 @@ namespace backend.Repositories
         {
 
             if (count <= 0) return [];
-            
-            return await _context.Chat.OrderByDescending((chatMessage) => chatMessage.DateT)
-                .Take(count).OrderBy((chatMessage) => chatMessage.DateT)
-                .ThenBy((chatMessage) => chatMessage.Id).ToListAsync();
+
+            return await _context.Chat
+                .AsNoTracking()
+                .OrderByDescending((chatMessage) => chatMessage.DateT)
+                .ThenByDescending((chatMessage) => chatMessage.Id)
+                .Take(count)
+                .OrderBy((chatMessage) => chatMessage.DateT)
+                .ThenBy((chatMessage) => chatMessage.Id)
+                .ToListAsync();
         }
 
     

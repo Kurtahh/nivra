@@ -20,5 +20,15 @@ namespace backend.Services
             message.DateT = DateTime.UtcNow;
             return _repository.Add(message);
         }
+
+        public async Task<List<Chat>> GetMessagesAsync(int count = 50)
+        {
+
+            if (count > 100)
+            {
+                count = 100;
+            } 
+            return await _repository.GetMessagesAsync(count);
+        }
     }
 }

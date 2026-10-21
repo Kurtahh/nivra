@@ -276,6 +276,25 @@ public class ChatTestsRepo
     }
 
     [Fact]
+    public async Task GetMessagesKeepsTheNewestMessagesWhenTheLimitCutsThroughATie()
+    {
+        var (repository, _) = CreateRepo();
+        var sameTime = new DateTime(2026, 10, 1, 9, 0, 0);
+        foreach (var id in new[] { 21, 22, 23 })
+        {
+            var message = NewMessage($"id {id}", sameTime);
+            message.Id = id;
+            repository.Add(message);
+        }
+
+        var messages = await repository.GetMessagesAsync(2);
+
+        Assert.Equal(
+            new[] { "id 22", "id 23" },
+            messages.Select(message => message.Message));
+    }
+
+    [Fact]
     public async Task GetMessagesDoesNotChangeTheStoredMessages()
     {
         var (repository, context) = CreateRepo();
@@ -293,6 +312,8 @@ public class ChatTestsRepo
         repository.Add(NewMessage("only", new DateTime(2026, 10, 1, 9, 0, 0)));
 
         var values = await repository.GetMessagesAsync(-3);
+        Assert.Equal([], values);
+        values = await repository.GetMessagesAsync(0);
         Assert.Equal([], values);
     }
 }
