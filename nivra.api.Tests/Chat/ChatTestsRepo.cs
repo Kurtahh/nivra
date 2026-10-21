@@ -285,4 +285,14 @@ public class ChatTestsRepo
 
         Assert.Equal(1, context.Chat.Count());
     }
+    
+    [Fact]
+    public async Task GetMessagesReturnsEmptyListIfCount0OrLess()
+    {
+        var (repository, context) = CreateRepo();
+        repository.Add(NewMessage("only", new DateTime(2026, 10, 1, 9, 0, 0)));
+
+        var values = await repository.GetMessagesAsync(-3);
+        Assert.Equal([], values);
+    }
 }

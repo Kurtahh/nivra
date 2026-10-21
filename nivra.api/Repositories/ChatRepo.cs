@@ -43,6 +43,9 @@ namespace backend.Repositories
 
         public async Task<List<Chat>> GetMessagesAsync(int count)
         {
+
+            if (count <= 0) return [];
+            
             return await _context.Chat.OrderByDescending((chatMessage) => chatMessage.DateT)
                 .Take(count).OrderBy((chatMessage) => chatMessage.DateT)
                 .ThenBy((chatMessage) => chatMessage.Id).ToListAsync();
