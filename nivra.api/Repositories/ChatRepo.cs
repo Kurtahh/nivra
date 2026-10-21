@@ -1,5 +1,6 @@
 using backend.Enums;
 using backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories
 {
@@ -38,6 +39,13 @@ namespace backend.Repositories
             }
             
             return SendStatus.Success;
+        }
+
+        public async Task<List<Chat>> GetMessagesAsync(int count)
+        {
+            return await _context.Chat.OrderByDescending((chatMessage) => chatMessage.DateT)
+                .Take(count).OrderBy((chatMessage) => chatMessage.DateT)
+                .ThenBy((chatMessage) => chatMessage.Id).ToListAsync();
         }
 
     
