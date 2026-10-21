@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {Session} from "../classes/Session.ts";
 import InputSteps from "./InputSteps.tsx";
+import HealthTipWidget from "./HealthTipWidget.tsx";
 
 export default function Home() {
     let currentSession= Session.instance;
@@ -11,6 +12,7 @@ export default function Home() {
             <h1> Nivra</h1>
             <p>Hello {currentSession.getUsername()!}, you've taken {todaySteps.toString()} steps today</p>
             <InputSteps onStepsLogged={setTodaySteps} />
+            <HealthTipWidget />
         </div>
     );
 }
