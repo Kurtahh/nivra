@@ -136,4 +136,74 @@ public class ChatEndpointTests
         Assert.Single(context.Chat);
     }
 
+    private static void SeedMessages(AppDbContext context, int count)
+    {
+        var start = new DateTime(2026, 10, 1, 9, 0, 0);
+        for (var i = 1; i <= count; i++)
+        {
+            context.Chat.Add(new ChatMessage
+            {
+                DateT = start.AddMinutes(i),
+                Message = $"message {i}",
+                UserId = 1
+            });
+        }
+        context.SaveChanges();
+    }
+
+    [Fact]
+    public async Task GetMessages_ReturnsOkWithMessagesOldestFirst()
+    {
+        var (controller, context) = CreateController();
+        SeedMessages(context, 3);
+
+        var result = await controller.GetMessages(null);
+
+        var ok = Assert.IsType<OkObjectResult>(result);
+        var messages = Assert.IsAssignableFrom<List<ChatMessage>>(ok.Value);
+        Assert.Equal(
+            new[] { "message 1", "message 2", "message 3" },
+            messages.Select(message => message.Message));
+    }
+
+    [Fact]
+    public async Task GetMessages_UsesDefaultWindowWhenCountIsOmitted()
+    {
+        var (controller, context) = CreateController();
+        SeedMessages(context, 60);
+
+        var result = await controller.GetMessages(null);
+
+        var ok = Assert.IsType<OkObjectResult>(result);
+        var messages = Assert.IsAssignableFrom<List<ChatMessage>>(ok.Value);
+        Assert.Equal(50, messages.Count);
+    }
+
+    [Fact]
+    public async Task GetMessages_ReturnsRequestedNumberOfMessages()
+    {
+        var (controller, context) = CreateController();
+        SeedMessages(context, 5);
+
+        var result = await controller.GetMessages(2);
+
+        var ok = Assert.IsType<OkObjectResult>(result);
+        var messages = Assert.IsAssignableFrom<List<ChatMessage>>(ok.Value);
+        Assert.Equal(
+            new[] { "message 4", "message 5" },
+            messages.Select(message => message.Message));
+    }
+
+    [Fact]
+    public async Task GetMessages_ReturnsEmptyListWhenThereIsNoHistory()
+    {
+        var (controller, _) = CreateController();
+
+        var result = await controller.GetMessages(null);
+
+        var ok = Assert.IsType<OkObjectResult>(result);
+        var messages = Assert.IsAssignableFrom<List<ChatMessage>>(ok.Value);
+        Assert.Empty(messages);
+    }
+
 }

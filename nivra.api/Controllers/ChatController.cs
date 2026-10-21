@@ -40,4 +40,24 @@ public class ChatController : ControllerBase
         return Ok("Message sent successfully!");
 
     }
+
+    [HttpGet]
+    [Route("Messages")]
+    public async Task<IActionResult> GetMessages([FromQuery] int? count)
+    {
+        List<Chat> messages = [];
+        if (count == null)
+        {
+            messages = await _service.GetMessagesAsync();
+        }
+
+        if (count != null)
+        {
+             
+            messages = await _service.GetMessagesAsync(count.Value);
+        }
+
+        return Ok(messages);
+
+    }
 }
