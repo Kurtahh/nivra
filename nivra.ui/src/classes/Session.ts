@@ -3,13 +3,11 @@
 export class Session {
     static #instance: Session; 
     private username: String
-    private loginStatus: Boolean;
     private id: Number;
     private todaySteps: number;
    
    private constructor()  {
         this.username = ""
-        this.loginStatus = false;
         this.id = 0;
         this.todaySteps = 0;
    }
@@ -36,7 +34,6 @@ export class Session {
     
     public async login( username: String, id: Number) {
         
-       this.loginStatus = true;
        this.username = username;
        this.id = id;
        this.todaySteps = await this.fetchTodaySteps().then(num => {

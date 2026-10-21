@@ -7,9 +7,10 @@ export default function Chat() {
     const [historyVersion, setHistoryVersion] = useState(0);
 
     return(
-        <div>
+        <section className="chat-page">
+            <h1 className="page-title">Chat</h1>
             <ChatHistory key={historyVersion}></ChatHistory>
             <ChatInput changeHistory={ () => setHistoryVersion((v) => v + 1)}></ChatInput>
-        </div>
+        </section>
     );
 }

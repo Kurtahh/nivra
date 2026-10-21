@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 
 interface LeaderboardEntry {
     userId: number;
@@ -7,7 +7,7 @@ interface LeaderboardEntry {
     rank: number;
 }
 
-export const Leaderboard: React.FC = () => {
+export const Leaderboard = () => {
     const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
     const [period, setPeriod] = useState<string>('Weekly');
     const [loading, setLoading] = useState<boolean>(true);
@@ -30,43 +30,47 @@ export const Leaderboard: React.FC = () => {
     }, [period]);
 
     return (
-        <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
+        <section className="leaderboard">
             <h2>Leaderboard</h2>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
-                <select value={period} onChange={(e) => setPeriod(e.target.value)}>
+            <div className="leaderboard-controls">
+                <label htmlFor="leaderboard-period">Period</label>
+                <select
+                    id="leaderboard-period"
+                    value={period}
+                    onChange={(e) => setPeriod(e.target.value)}
+                >
                     <option value="Daily">Daily</option>
                     <option value="Weekly">Weekly</option>
                     <option value="Monthly">Monthly</option>
                     <option value="AllTime">All Time</option>
                 </select>
-                
             </div>
 
             {loading ? (
-                <p>Loading leaderboard...</p>
+                <p className="muted">Loading leaderboard...</p>
             ) : entries.length === 0 ? (
-                <p>No steps logged yet!</p>
+                <p className="muted">No steps logged yet!</p>
             ) : (
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                <table className="leaderboard-table">
                     <thead>
-                    <tr style={{ borderBottom: '2px solid #ccc' }}>
-                        <th style={{ padding: '8px' }}>Rank</th>
-                        <th style={{ padding: '8px' }}>User</th>
-                        <th style={{ padding: '8px' }}>Total Steps</th>
+                    <tr>
+                        <th>Rank</th>
+                        <th>User</th>
+                        <th>Total Steps</th>
                     </tr>
                     </thead>
                     <tbody>
                     {entries.map((entry) => (
-                        <tr key={entry.userId} style={{ borderBottom: '1px solid #eee' }}>
-                            <td style={{ padding: '8px', fontWeight: 'bold' }}>#{entry.rank}</td>
-                            <td style={{ padding: '8px' }}>{entry.username}</td>
-                            <td style={{ padding: '8px' }}>{entry.totalSteps.toLocaleString()}</td>
+                        <tr key={entry.userId}>
+                            <td className="rank-cell">#{entry.rank}</td>
+                            <td>{entry.username}</td>
+                            <td>{entry.totalSteps.toLocaleString()}</td>
                         </tr>
                     ))}
                     </tbody>
                 </table>
             )}
-        </div>
+        </section>
     );
 };

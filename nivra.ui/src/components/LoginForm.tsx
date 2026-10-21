@@ -1,11 +1,11 @@
-import {useState} from "react";
+import {useState, type ChangeEvent, type FormEvent} from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {Session} from "../classes/Session.ts"
 import { homePath, signupPath } from "../Paths.ts"
 
 export default function LoginForm() {
     let navigate = useNavigate();
-    const  handleSubmit = async (e) => {
+    const  handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 
         e.preventDefault()
         let passwordHash = password;
@@ -38,23 +38,23 @@ export default function LoginForm() {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     
-    function handleUsernameChange(e) {
+    function handleUsernameChange(e: ChangeEvent<HTMLInputElement>) {
         setUsername(e.target.value)
     }
 
-    function handlePasswordChange(e) {
+    function handlePasswordChange(e: ChangeEvent<HTMLInputElement>) {
         setPassword(e.target.value)
     }
 
     return (
         <div className="header">
             <h1 >Log in</h1>
-            <form >
+            <form className="auth-form" onSubmit={handleSubmit}>
                 <label htmlFor="username">Username: </label>
                 <input type="text" onChange={handleUsernameChange} value={username}></input> <br/><br/>
                 <label htmlFor="password">Password: </label>
                 <input type="password" onChange={handlePasswordChange} value={password}></input> <br/><br/>
-                <input type="submit" value="Submit" onClick={handleSubmit}/>
+                <input type="submit" value="Submit" />
             </form>
             <br/>
             <Link to={signupPath}>Don't have an account yet?</Link>
