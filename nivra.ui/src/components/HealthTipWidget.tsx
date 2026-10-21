@@ -21,13 +21,9 @@ export default function HealthTipWidget() {
             .catch((err) => console.error("Error fetching health tip: ", err));
     }, []);
 
-    if (tip === null) {
-        return <p>Loading a health tip...</p>;
-    }
-
     return (
         <div className="health-tip">
-            <p>{tip.content}</p>
+            <p>{tip == null ? "Loading a health tip..." : tip.content}</p>
         </div>
     );
 }
