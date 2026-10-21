@@ -28,6 +28,8 @@ builder.Services.AddScoped<HealthTipRepo>();
 builder.Services.AddScoped<HealthTipService>();
 builder.Services.AddScoped<LeaderboardRepo>();
 builder.Services.AddScoped<LeaderboardService>();
+builder.Services.AddScoped<ChatRepo>();
+builder.Services.AddScoped<ChatService>();
 
 var app = builder.Build();
 

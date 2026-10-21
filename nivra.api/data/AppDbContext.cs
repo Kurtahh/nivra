@@ -11,6 +11,8 @@ public class AppDbContext : DbContext
     public DbSet<StepEntry> StepEntries { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<HealthTip> HealthTips { get; set; }
+    
+    public DbSet<Chat> Chat{ get; set; } 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

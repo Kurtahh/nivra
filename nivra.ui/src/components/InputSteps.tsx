@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { Session } from "../classes/Session";
 
 type Props = { onStepsLogged: (value: number) => void };
@@ -7,7 +7,7 @@ export default function InputSteps({onStepsLogged}: Props) {
     const [steps, setSteps] = useState("")
     const [errorMsg, setErrorMsg] = useState("")
 
-    async function handleSubmit(e) {
+    async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault()
         const response = await fetch('http://localhost:5207/api/Steps', {
             method: "POST",
