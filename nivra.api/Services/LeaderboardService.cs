@@ -1,30 +1,23 @@
 ﻿using backend.Models;
 using backend.Repositories;
+using backend.Extensions;
 
 namespace backend.Services;
 
 public class LeaderboardService
 {
-    private readonly LeaderboardRepo _repository;
+    private readonly LeaderboardRepo _leaderboardRepo;
 
-    public LeaderboardService(LeaderboardRepo repository)
+    public LeaderboardService(LeaderboardRepo leaderboardRepo)
     {
-        _repository = repository;
+        _leaderboardRepo = leaderboardRepo;
     }
 
     public async Task<List<LeaderboardEntry>> GetLeaderboardAsync(
         TimePeriod period = TimePeriod.Weekly, 
         int topCount = 10)
     {
-        DateOnly startDate = period switch
-        {
-            TimePeriod.Daily => DateOnly.FromDateTime(DateTime.UtcNow),
-            TimePeriod.Weekly => DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-7)),
-            TimePeriod.Monthly => DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(-1)),
-            TimePeriod.AllTime => DateOnly.MinValue,
-            _ => DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-7))
-        };
-
-        return await _repository.GetTopWalkersAsync(startDate, topCount);
+        DateOnly startDate = DateUtils.GetStartDate(period);
+        return await _leaderboardRepo.GetTopWalkersAsync(startDate, topCount);
     }
 }

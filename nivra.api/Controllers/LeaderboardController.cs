@@ -8,17 +8,17 @@ namespace backend.Controllers;
 [ApiController]
 public class LeaderboardController : ControllerBase
 {
-    private readonly LeaderboardService _service;
+    private readonly LeaderboardService _leaderboardService;
 
-    public LeaderboardController(LeaderboardService service)
+    public LeaderboardController(LeaderboardService leaderboardService)
     {
-        _service = service;
+        _leaderboardService = leaderboardService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetLeaderboard([FromQuery] TimePeriod period = TimePeriod.Weekly, [FromQuery] int top = 10)
     {
-        var leaderboard = await _service.GetLeaderboardAsync(period: period, topCount: top);
+        var leaderboard = await _leaderboardService.GetLeaderboardAsync(period: period, topCount: top);
         return Ok(leaderboard);
     }
 }

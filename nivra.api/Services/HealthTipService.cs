@@ -15,7 +15,7 @@ namespace backend.Services
         private void ValidateIsNotEmpty(int n)
         {
             if(n <= 0)
-                throw new ArgumentException("Šiuo metu sveikatos patarimų nėra");
+                throw new ArgumentException("No health tips are available at the moment.");
         }
 
         public HealthTip GetRandomTip()
