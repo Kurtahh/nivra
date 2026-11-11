@@ -1,3 +1,4 @@
+using backend.Interfaces;
 using backend.Repositories;
 using backend.Services;
 using Microsoft.EntityFrameworkCore;
@@ -20,16 +21,16 @@ builder.Services.AddDbContext<AppDbContext>((DbContextOptionsBuilder options) =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<StepsRepo>();
-builder.Services.AddScoped<StepsService>();
-builder.Services.AddScoped<UserRepo>();
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<HealthTipRepo>();
-builder.Services.AddScoped<HealthTipService>();
-builder.Services.AddScoped<LeaderboardRepo>();
-builder.Services.AddScoped<LeaderboardService>();
-builder.Services.AddScoped<ChatRepo>();
-builder.Services.AddScoped<ChatService>();
+builder.Services.AddScoped<IStepsRepo, StepsRepo>();
+builder.Services.AddScoped<IStepsService, StepsService>();
+builder.Services.AddScoped<IUserRepo, UserRepo>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IHealthTipRepo, HealthTipRepo>();
+builder.Services.AddScoped<IHealthTipService, HealthTipService>();
+builder.Services.AddScoped<ILeaderboardRepo, LeaderboardRepo>();
+builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
+builder.Services.AddScoped<IChatRepo, ChatRepo>();
+builder.Services.AddScoped<IChatService, ChatService>();
 
 var app = builder.Build();
 

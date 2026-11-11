@@ -1,9 +1,10 @@
-﻿using backend.Models;
+﻿using backend.Interfaces;
+using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories;
 
-public class LeaderboardRepo
+public class LeaderboardRepo : ILeaderboardRepo
 {
     private readonly AppDbContext _context;
 

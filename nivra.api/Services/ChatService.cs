@@ -1,15 +1,15 @@
 using backend.Enums;
+using backend.Interfaces;
 using backend.Models;
 using backend.Repositories;
 
 namespace backend.Services
 {
-    
-    public class ChatService
+    public class ChatService : IChatService
     {
-        private readonly ChatRepo _repository;
+        private readonly IChatRepo _repository;
 
-        public ChatService(ChatRepo repository)
+        public ChatService(IChatRepo repository)
         {
             _repository = repository;
         }

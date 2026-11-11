@@ -1,14 +1,15 @@
 using backend.Enums;
+using backend.Interfaces;
 using backend.Models;
 using backend.Repositories;
 using Microsoft.AspNetCore.Identity;
 
 namespace backend.Services{
-    public class  UserService 
+    public class  UserService : IUserService
     {
-        private readonly UserRepo _repository;
+        private readonly IUserRepo _repository;
 
-        public UserService(UserRepo repository)
+        public UserService(IUserRepo repository)
         {
             _repository = repository;
         }

@@ -1,13 +1,14 @@
 using System.Runtime.InteropServices.JavaScript;
+using backend.Interfaces;
 using backend.Models;
 using backend.Repositories;
 
 namespace backend.Services{
-    public class StepsService
+    public class StepsService : IStepsService
     {
-        private readonly StepsRepo _repository;
+        private readonly IStepsRepo _repository;
 
-        public StepsService(StepsRepo repository)
+        public StepsService(IStepsRepo repository)
         {
             _repository = repository;
         }

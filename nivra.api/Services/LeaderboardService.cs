@@ -1,14 +1,15 @@
-﻿using backend.Models;
+﻿using backend.Interfaces;
+using backend.Models;
 using backend.Repositories;
 using backend.Extensions;
 
 namespace backend.Services;
 
-public class LeaderboardService
+public class LeaderboardService : ILeaderboardService
 {
-    private readonly LeaderboardRepo _leaderboardRepo;
+    private readonly ILeaderboardRepo _leaderboardRepo;
 
-    public LeaderboardService(LeaderboardRepo leaderboardRepo)
+    public LeaderboardService(ILeaderboardRepo leaderboardRepo)
     {
         _leaderboardRepo = leaderboardRepo;
     }

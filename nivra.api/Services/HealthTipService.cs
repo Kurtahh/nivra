@@ -1,13 +1,14 @@
+using backend.Interfaces;
 using backend.Repositories;
 using backend.Models;
 
 namespace backend.Services
 {
-    public class HealthTipService
+    public class HealthTipService : IHealthTipService
     {
-        private readonly HealthTipRepo _repository;
+        private readonly IHealthTipRepo _repository;
 
-        public HealthTipService(HealthTipRepo repository)
+        public HealthTipService(IHealthTipRepo repository)
         {
             _repository = repository;
         }
