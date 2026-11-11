@@ -1,18 +1,18 @@
 using backend.Enums;
+using backend.Interfaces;
 using backend.Models;
-using backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : ControllerBase, IUserController
     {
-        private readonly UserService _service;
-        private readonly StepsService _stepsService;
+        private readonly IUserService _service;
+        private readonly IStepsService _stepsService;
 
-        public UserController(UserService service, StepsService serviceStepEntry)
+        public UserController(IUserService service, IStepsService serviceStepEntry)
         {
             _service = service;
             _stepsService = serviceStepEntry;

@@ -1,16 +1,16 @@
-﻿using backend.Models;
-using backend.Services;
+﻿using backend.Interfaces;
+using backend.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class LeaderboardController : ControllerBase
+public class LeaderboardController : ControllerBase, ILeaderboardController
 {
-    private readonly LeaderboardService _leaderboardService;
+    private readonly ILeaderboardService _leaderboardService;
 
-    public LeaderboardController(LeaderboardService leaderboardService)
+    public LeaderboardController(ILeaderboardService leaderboardService)
     {
         _leaderboardService = leaderboardService;
     }

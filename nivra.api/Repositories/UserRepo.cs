@@ -1,10 +1,11 @@
 using backend.Enums;
+using backend.Interfaces;
 using backend.Models;
 
 
 namespace backend.Repositories
 {
-    public class UserRepo
+    public class UserRepo : IUserRepo
     {
         private readonly AppDbContext _context;
 

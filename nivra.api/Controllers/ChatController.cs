@@ -1,26 +1,19 @@
 using backend.Enums;
+using backend.Interfaces;
 using backend.Models;
-using backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ChatController : ControllerBase
+public class ChatController(IChatService service) : ControllerBase, IChatController
 {
-    private readonly ChatService _service;
-
-    public ChatController(ChatService service)
-    {
-        _service = service;
-    }
-
     [HttpPost]
     [Route("SendMessage")]
     public IActionResult SendUserMessage(Chat chat)
     {
-        var status = _service.SendMessageToChat(chat);
+        var status = service.SendMessageToChat(chat);
 
         if (status == SendStatus.MessageAbove200)
         {
@@ -48,13 +41,13 @@ public class ChatController : ControllerBase
         List<Chat> messages = [];
         if (count == null)
         {
-            messages = await _service.GetMessagesAsync();
+            messages = await service.GetMessagesAsync();
         }
 
         if (count != null)
         {
              
-            messages = await _service.GetMessagesAsync(count.Value);
+            messages = await service.GetMessagesAsync(count.Value);
         }
 
         return Ok(messages);

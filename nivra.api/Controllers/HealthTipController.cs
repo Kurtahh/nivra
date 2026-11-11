@@ -1,4 +1,4 @@
-using backend.Services;
+using backend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using backend.Exceptions;
 
@@ -6,11 +6,11 @@ namespace backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HealthTipController : ControllerBase
+    public class HealthTipController : ControllerBase, IHealthTipController
     {
-        private readonly HealthTipService _service;
+        private readonly IHealthTipService _service;
 
-        public HealthTipController(HealthTipService service)
+        public HealthTipController(IHealthTipService service)
         {
             _service = service;
         }

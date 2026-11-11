@@ -1,10 +1,11 @@
 using backend.Enums;
+using backend.Interfaces;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories
 {
-    public class ChatRepo 
+    public class ChatRepo : IChatRepo
     {
     
         private readonly AppDbContext _context;
