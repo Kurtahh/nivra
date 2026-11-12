@@ -6,7 +6,10 @@ namespace backend.Models;
 [Table("skin")]
 public class Skin : IShopEntity
 {
+    [Column("id")]
     public int Id { get; set; }
-    public int Name { get; set; }
+    [Column("name")]
+    public required string Name { get; set; }
+    [Column("price")]
     public int Price { get; set; }
 }

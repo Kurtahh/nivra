@@ -31,6 +31,10 @@ builder.Services.AddScoped<ILeaderboardRepo, LeaderboardRepo>();
 builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
 builder.Services.AddScoped<IChatRepo, ChatRepo>();
 builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped(typeof(IShopRepository<>), typeof(ShopRepository<>));
+builder.Services.AddScoped<ISkinService, SkinService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 var app = builder.Build();
 

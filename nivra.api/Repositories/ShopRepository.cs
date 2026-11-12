@@ -22,6 +22,7 @@ public class ShopRepository<T> : IShopRepository<T> where T : class, IShopEntity
     public void Delete(T entity)
     {
         _table.Remove(entity);
+        _context.SaveChanges();
     }
 
     public T? GetById(int id)
@@ -30,14 +31,16 @@ public class ShopRepository<T> : IShopRepository<T> where T : class, IShopEntity
         return _table.Find(id);
     }
 
-    public void UpdateById(T obj)
+    public void Update(T obj)
     {
         _table.Attach(obj);
         _context.Entry(obj).State = EntityState.Modified;
+        _context.SaveChanges();
     }
 
     public void Add(T value)
     {
         _table.Add(value);
+        _context.SaveChanges();
     }
 }
