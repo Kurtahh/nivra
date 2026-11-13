@@ -14,6 +14,10 @@ public class AppDbContext : DbContext
     
     public DbSet<Chat> Chat{ get; set; } 
 
+    public DbSet<Skin> Skins { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<Account> Accounts { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         var categoryConverter = new ValueConverter<TipCategory, string>(

@@ -1,0 +1,15 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using backend.Interfaces;
+
+namespace backend.Models;
+
+[Table("skin")]
+public class Skin : IShopEntity
+{
+    [Column("id")]
+    public int Id { get; set; }
+    [Column("name")]
+    public required string Name { get; set; }
+    [Column("price")]
+    public int Price { get; set; }
+}
