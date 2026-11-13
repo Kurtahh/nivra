@@ -1,5 +1,6 @@
 export const loginPath = "/"
 export const signupPath = "/signup"
 export const homePath = "/home"
+export const shopPath = "/shop"
 export const leaderboardPath = "/leaderboard"
 export const chatPath = "/chat"

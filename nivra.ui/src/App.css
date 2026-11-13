@@ -39,6 +39,20 @@
     text-decoration: none;
 }
 
+.nav-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin-right: var(--space-2);
+    font-size: 1.3rem;
+    line-height: 1;
+    background-color: var(--color-accent-soft);
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+}
+
 .app-main {
     flex: 1;
     width: 100%;
@@ -327,6 +341,194 @@ button:disabled {
     color: var(--color-accent-strong);
 }
 
+/* ---------- Shop ---------- */
+
+.avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    flex: 0 0 auto;
+    font-size: 1.6rem;
+    line-height: 1;
+    background-color: var(--color-accent-soft);
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+}
+
+.avatar-large {
+    width: 72px;
+    height: 72px;
+    font-size: 2.4rem;
+}
+
+.home-avatar {
+    box-shadow: var(--shadow-sm);
+}
+
+.home-shop-link {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.shop {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+.shop-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.shop-header h2 {
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+}
+
+.shop-wallet {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    text-align: right;
+}
+
+.shop-balance {
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--color-accent-strong);
+    font-variant-numeric: tabular-nums;
+}
+
+.shop-profile {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.shop-profile-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.shop-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+}
+
+.shop-link-button {
+    align-self: flex-start;
+    padding: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-accent-strong);
+    background: none;
+    border: none;
+    border-radius: 0;
+    text-decoration: underline;
+}
+
+.shop-link-button:hover:not(:disabled) {
+    color: var(--color-accent);
+    background: none;
+}
+
+.shop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.shop-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    text-align: center;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.shop-card.owned {
+    border-color: var(--color-accent);
+}
+
+.shop-card.equipped {
+    background-color: var(--color-accent-soft);
+    box-shadow: var(--shadow-md);
+}
+
+.shop-icon {
+    font-size: 2.6rem;
+    line-height: 1;
+}
+
+.shop-card h3 {
+    font-size: 1rem;
+}
+
+.shop-price {
+    color: var(--color-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.shop-status {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-accent-strong);
+}
+
+.shop-card button {
+    align-self: stretch;
+    width: 100%;
+    margin-top: auto;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+}
+
+.shop-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-6);
+    text-align: center;
+    background-color: var(--color-surface);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+.shop-empty button {
+    align-self: center;
+}
+
 /* ---------- Small screens ---------- */
 
 @media (max-width: 600px) {
@@ -356,6 +558,12 @@ button:disabled {
     .chat-form button,
     .centered-form form button {
         width: 100%;
+    }
+
+    .shop-header,
+    .shop-wallet {
+        align-items: flex-start;
+        text-align: left;
     }
 }
 
