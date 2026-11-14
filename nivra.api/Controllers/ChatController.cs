@@ -13,6 +13,9 @@ public class ChatController(IChatService service) : ControllerBase, IChatControl
     [Route("SendMessage")]
     public IActionResult SendUserMessage(Chat chat)
     {
+        
+        
+        
         var status = service.SendMessageToChat(chat);
 
         if (status == SendStatus.MessageAbove200)
