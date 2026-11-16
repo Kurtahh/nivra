@@ -87,6 +87,23 @@ describe("ChatInput", () => {
         );
     });
 
+    it("notifies the chat page about the sent message", async () => {
+        const onMessageSent = vi.fn();
+        mockFetchOnce({
+            ok: true,
+            status: 202,
+            text: async () => "Message sent successfully!"
+        });
+
+        render(<ChatInput onMessageSent={onMessageSent} />);
+        typeMessage("Hello my health-nuts");
+        clickSend();
+
+        await waitFor(() =>
+            expect(onMessageSent).toHaveBeenCalledWith("Hello my health-nuts")
+        );
+    });
+
     it("shows the backend error and keeps the message when the server rejects it", async () => {
         mockFetchOnce({
             ok: false,

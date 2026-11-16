@@ -1,6 +1,7 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import { vi } from "vitest";
 import ChatHistory from "../components/ChatHistory";
+import { CHAT_POLL_INTERVAL_MS } from "../classes/ChatMessages";
 
 const MESSAGES_URL = "http://localhost:5207/api/Chat/Messages";
 
@@ -89,5 +90,36 @@ describe("ChatHistory", () => {
         expect(await screen.findByRole("alert")).toHaveTextContent(
             "Could not load chat history"
         );
+    });
+
+    it("refreshes the history on a polling interval", async () => {
+        vi.useFakeTimers();
+        mockJsonOnce(threeMessages);
+        const { unmount } = render(<ChatHistory />);
+
+        try {
+            await act(async () => {});
+            expect(screen.getByText("newest message")).toBeInTheDocument();
+
+            mockJsonOnce([
+                ...threeMessages,
+                {
+                    id: 4,
+                    dateT: "2026-10-01T09:04:00Z",
+                    message: "polled message",
+                    userId: 2
+                }
+            ]);
+
+            await act(async () => {
+                await vi.advanceTimersByTimeAsync(CHAT_POLL_INTERVAL_MS);
+            });
+
+            expect(screen.getByText("polled message")).toBeInTheDocument();
+            expect(fetch).toHaveBeenCalledTimes(2);
+        } finally {
+            unmount();
+            vi.useRealTimers();
+        }
     });
 });

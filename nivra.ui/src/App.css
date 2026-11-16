@@ -241,6 +241,20 @@ button:disabled {
     font-variant-numeric: tabular-nums;
 }
 
+.chat-message-pending {
+    border: 1px dashed var(--color-border);
+    background-color: transparent;
+    color: var(--color-muted);
+    font-style: italic;
+}
+
+.chat-pending {
+    flex: 0 0 auto;
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    font-variant-numeric: tabular-nums;
+}
+
 .chat-loading,
 .chat-empty {
     padding: var(--space-6);
