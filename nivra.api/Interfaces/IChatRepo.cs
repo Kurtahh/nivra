@@ -5,6 +5,6 @@ namespace backend.Interfaces;
 
 public interface IChatRepo
 {
-    SendStatus Add(Chat message);
+    Task<SendStatus> Add(Chat message, CancellationToken stoppingToken);
     Task<List<Chat>> GetMessagesAsync(int count);
 }

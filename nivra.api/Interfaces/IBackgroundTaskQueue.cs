@@ -5,7 +5,7 @@ namespace backend.Interfaces;
 
 public interface IBackgroundTaskQueue
 {
-    Task Enqueue(Chat message);
-    Task Dequeue([NotNullWhen(true )] out Chat? message);
+    void Enqueue(Chat message);
+    bool TryDequeue([NotNullWhen(true )] out Chat? message);
     
 }

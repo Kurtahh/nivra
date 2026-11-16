@@ -15,10 +15,10 @@ namespace backend.Services
         }
 
 
-        public SendStatus SendMessageToChat(Chat message)
+        public async Task<SendStatus> SendMessageToChat(Chat message, CancellationToken stoppingToken)
         {
             message.DateT = DateTime.UtcNow;
-            return _repository.Add(message);
+            return await _repository.Add(message, stoppingToken);
         }
 
         public async Task<List<Chat>> GetMessagesAsync(int count = 50)

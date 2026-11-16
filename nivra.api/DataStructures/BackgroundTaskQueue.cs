@@ -7,17 +7,16 @@ namespace backend.DataStructures;
 
 public class BackgroundTaskQueue : IBackgroundTaskQueue
 {
-    readonly ConcurrentQueue<Chat> queue = new();
+    private readonly ConcurrentQueue<Chat> _queue = new();
     
-    
-    public Task Enqueue(Chat message)
+    public void Enqueue(Chat message)
     {
-        ArgumentsNullException.TrowIfNull(message);
-        queue.Enqueue(message);
+        ArgumentNullException.ThrowIfNull(message);
+        _queue.Enqueue(message);
     }
 
-    public Task TryDequeue([NotNullWhen(true)] out Chat? message)
+    public bool TryDequeue([NotNullWhen(true)] out Chat? message)
     {
-        return queue.TryDequeue(out message);
+        return _queue.TryDequeue(out message) ;
     }
 }

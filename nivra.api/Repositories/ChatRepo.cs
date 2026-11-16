@@ -15,7 +15,7 @@ namespace backend.Repositories
             _context = context;
         }
     
-        public SendStatus Add(Chat message)
+        public async Task<SendStatus> Add(Chat message, CancellationToken stoppingToken)
         {
             
             
