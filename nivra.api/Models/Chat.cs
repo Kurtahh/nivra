@@ -9,7 +9,7 @@ namespace backend.Models
         [Column ("created_at")]
         public DateTime DateT { get; set; }
         [Column ("message")]
-        public string Message { get; set; }
+        public string? Message { get; set; }
         [Column ("user_id")]
         public long UserId { get; set; }
     }
