@@ -25,7 +25,7 @@ public class ChatTestsRepo
             Message = "Hello my health-nuts",
             UserId = 0
         };
-        var value = repository.Add(chatMessage);
+        var value = await repository.Add(chatMessage, CancellationToken.None);
         
         Assert.Equal(SendStatus.Success, value);
         
@@ -51,7 +51,7 @@ public class ChatTestsRepo
             UserId = 0
         };
         
-        var value = repository.Add(chatMessage);
+        var value = await repository.Add(chatMessage, CancellationToken.None);
         Assert.Equal(SendStatus.Success, value);
 
         var savedChat = await context.Chat.FindAsync(4);
@@ -78,7 +78,7 @@ public class ChatTestsRepo
             UserId = 0
         };
         
-        var value = repository.Add(chatMessage);
+        var value = await repository.Add(chatMessage, CancellationToken.None);
 
         Assert.Equal(SendStatus.MessageIsEmpty, value);
     }
@@ -101,7 +101,7 @@ public class ChatTestsRepo
             UserId = 0
         };
 
-        var value = repository.Add(chatMessage);
+        var value = await repository.Add(chatMessage, CancellationToken.None);
 
         Assert.Equal(SendStatus.MessageIsEmpty, value);
         Assert.Equal(0, context.Chat.Count());
@@ -125,7 +125,7 @@ public class ChatTestsRepo
             UserId = 0
         };
 
-        var value = repository.Add(chatMessage);
+        var value = await repository.Add(chatMessage, CancellationToken.None);
 
         Assert.Equal(SendStatus.MessageIsEmpty, value);
         Assert.Equal(0, context.Chat.Count());
@@ -153,7 +153,7 @@ public class ChatTestsRepo
             UserId = 0
         };
         
-        var value = repository.Add(chatMessage);
+        var value = await repository.Add(chatMessage, CancellationToken.None);
 
         Assert.Equal(SendStatus.MessageAbove200, value);
     }
@@ -183,9 +183,9 @@ public class ChatTestsRepo
             UserId = 0
         };
         
-        var value = repository.Add(chatMessage);
+        var value = await repository.Add(chatMessage, CancellationToken.None);
         Assert.Equal(SendStatus.Success, value);
-        value = repository.Add(chatMessage2);
+        value = await repository.Add(chatMessage2, CancellationToken.None);
         Assert.Equal(SendStatus.MessageAlreadyExists, value);
         
     }
@@ -218,9 +218,9 @@ public class ChatTestsRepo
         var oldest = NewMessage("oldest", new DateTime(2026, 10, 1, 9, 0, 0));
         var middle = NewMessage("middle", new DateTime(2026, 10, 2, 9, 0, 0));
 
-        repository.Add(newest);
-        repository.Add(oldest);
-        repository.Add(middle);
+        await repository.Add(newest, CancellationToken.None);
+        await repository.Add(oldest, CancellationToken.None);
+        await repository.Add(middle, CancellationToken.None);
 
         var messages = await repository.GetMessagesAsync(10);
 
@@ -245,7 +245,7 @@ public class ChatTestsRepo
         var (repository, _) = CreateRepo();
         for (var day = 1; day <= 5; day++)
         {
-            repository.Add(NewMessage($"day {day}", new DateTime(2026, 10, day, 9, 0, 0)));
+            await repository.Add(NewMessage($"day {day}", new DateTime(2026, 10, day, 9, 0, 0)), CancellationToken.None);
         }
 
         var messages = await repository.GetMessagesAsync(2);
@@ -265,8 +265,8 @@ public class ChatTestsRepo
         var earlierInserted = NewMessage("first by id", sameTime);
         earlierInserted.Id = 11;
 
-        repository.Add(laterInserted);
-        repository.Add(earlierInserted);
+        await repository.Add(laterInserted, CancellationToken.None);
+        await repository.Add(earlierInserted, CancellationToken.None);
 
         var messages = await repository.GetMessagesAsync(10);
 
@@ -284,7 +284,7 @@ public class ChatTestsRepo
         {
             var message = NewMessage($"id {id}", sameTime);
             message.Id = id;
-            repository.Add(message);
+            await repository.Add(message, CancellationToken.None);
         }
 
         var messages = await repository.GetMessagesAsync(2);
@@ -298,7 +298,7 @@ public class ChatTestsRepo
     public async Task GetMessagesDoesNotChangeTheStoredMessages()
     {
         var (repository, context) = CreateRepo();
-        repository.Add(NewMessage("only", new DateTime(2026, 10, 1, 9, 0, 0)));
+        await repository.Add(NewMessage("only", new DateTime(2026, 10, 1, 9, 0, 0)), CancellationToken.None);
 
         await repository.GetMessagesAsync(10);
 
@@ -309,7 +309,7 @@ public class ChatTestsRepo
     public async Task GetMessagesReturnsEmptyListIfCount0OrLess()
     {
         var (repository, context) = CreateRepo();
-        repository.Add(NewMessage("only", new DateTime(2026, 10, 1, 9, 0, 0)));
+        await repository.Add(NewMessage("only", new DateTime(2026, 10, 1, 9, 0, 0)), CancellationToken.None);
 
         var values = await repository.GetMessagesAsync(-3);
         Assert.Equal([], values);

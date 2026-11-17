@@ -1,8 +1,9 @@
-using System.Reflection;
 using backend.Controllers;
-using ChatMessage = backend.Models.Chat;
+using backend.DataStructures;
+using backend.Enums;
 using backend.Repositories;
 using backend.Services;
+using ChatMessage = backend.Models.Chat;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,17 +11,19 @@ namespace nivra.api.Tests.Chat;
 
 public class ChatEndpointTests
 {
-    private static (ChatController Controller, AppDbContext Context) CreateController()
+    private static (ChatController Controller, AppDbContext Context, BackgroundTaskQueue Queue, ChatService Service)
+        CreateController()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
         var context = new AppDbContext(options);
+        var queue = new BackgroundTaskQueue();
         var repository = new ChatRepo(context);
         var service = new ChatService(repository);
 
-        return (new ChatController(service), context);
+        return (new ChatController(queue, service), context, queue, service);
     }
 
     private static ChatMessage ValidMessage(long userId = 1)
@@ -34,35 +37,66 @@ public class ChatEndpointTests
     }
 
     [Fact]
-    public void SendMessage_ReturnsOk_WhenMessageIsValid()
+    public void SendMessage_ReturnsAccepted_WhenMessageIsValid()
     {
-        var (controller, _) = CreateController();
+        var (controller, _, _, _) = CreateController();
 
         var result = controller.SendUserMessage(ValidMessage());
 
-        var ok = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(200, ok.StatusCode);
+        var accepted = Assert.IsType<AcceptedResult>(result);
+        Assert.Equal(202, accepted.StatusCode);
     }
 
     [Fact]
-    public void SendMessage_SavesMessageForTheSendingUser()
+    public void SendMessage_EnqueuesTheMessageForBackgroundProcessing()
     {
-        var (controller, context) = CreateController();
+        var (controller, _, queue, _) = CreateController();
+        var message = ValidMessage(userId: 42);
 
-        controller.SendUserMessage(ValidMessage(userId: 42));
+        controller.SendUserMessage(message);
 
-        var savedChat = Assert.Single(context.Chat);
-        Assert.Equal("Hello my health-nuts", savedChat.Message);
-        Assert.Equal(42, savedChat.UserId);
+        Assert.True(queue.TryDequeue(out var queued));
+        Assert.Same(message, queued);
+        Assert.Equal("Hello my health-nuts", queued.Message);
+        Assert.Equal(42, queued.UserId);
     }
 
     [Fact]
-    public void SendMessage_UsesServerTimeInsteadOfClientTime()
+    public void SendMessage_DoesNotPersistTheMessageSynchronously()
     {
-        var (controller, context) = CreateController();
+        var (controller, context, _, _) = CreateController();
 
         controller.SendUserMessage(ValidMessage());
 
+        Assert.Empty(context.Chat);
+    }
+
+    [Fact]
+    public void SendMessage_DefersValidationToTheBackgroundWorker()
+    {
+        var (controller, _, _, _) = CreateController();
+        var message = ValidMessage();
+        message.Message = "";
+
+        // Validation now happens in the background worker, so the endpoint accepts it.
+        var result = controller.SendUserMessage(message);
+
+        Assert.IsType<AcceptedResult>(result);
+    }
+
+    [Fact]
+    public async Task QueuedMessage_IsSavedWithServerTime()
+    {
+        var (controller, context, queue, service) = CreateController();
+        var message = ValidMessage();
+        message.DateT = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        controller.SendUserMessage(message);
+        Assert.True(queue.TryDequeue(out var queued));
+
+        var status = await service.SendMessageToChat(queued, CancellationToken.None);
+
+        Assert.Equal(SendStatus.Success, status);
         var savedChat = Assert.Single(context.Chat);
         Assert.True(
             Math.Abs((DateTime.UtcNow - savedChat.DateT).TotalSeconds) < 5,
@@ -70,70 +104,19 @@ public class ChatEndpointTests
     }
 
     [Fact]
-    public void SendMessage_ReturnsBadRequest_WhenMessageIsEmpty()
+    public async Task QueuedEmptyMessage_IsRejectedByTheBackgroundService()
     {
-        var (controller, _) = CreateController();
+        var (controller, context, queue, service) = CreateController();
         var message = ValidMessage();
         message.Message = "";
 
-        var result = controller.SendUserMessage(message);
+        controller.SendUserMessage(message);
+        Assert.True(queue.TryDequeue(out var queued));
 
-        var badRequest = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal(400, badRequest.StatusCode);
-    }
+        var status = await service.SendMessageToChat(queued, CancellationToken.None);
 
-    [Fact]
-    public void SendMessage_ReturnsBadRequest_WhenMessageIsLongerThan200Characters()
-    {
-        var (controller, _) = CreateController();
-        var message = ValidMessage();
-        message.Message = new string('F', 201);
-
-        var result = controller.SendUserMessage(message);
-
-        var badRequest = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal(400, badRequest.StatusCode);
-    }
-
-    [Fact]
-    public void SendMessage_ReturnsBadRequest_WhenMessageIsNull()
-    {
-        var (controller, context) = CreateController();
-        var message = ValidMessage();
-        message.Message = null;
-
-        var result = controller.SendUserMessage(message);
-
-        var badRequest = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal(400, badRequest.StatusCode);
+        Assert.Equal(SendStatus.MessageIsEmpty, status);
         Assert.Empty(context.Chat);
-    }
-
-    [Fact]
-    public void SendMessage_ReturnsBadRequest_WhenMessageIsOnlyWhitespace()
-    {
-        var (controller, context) = CreateController();
-        var message = ValidMessage();
-        message.Message = "     ";
-
-        var result = controller.SendUserMessage(message);
-
-        var badRequest = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal(400, badRequest.StatusCode);
-        Assert.Empty(context.Chat);
-    }
-
-    [Fact]
-    public void SendMessage_StillReturnsOkAtExactly200Characters()
-    {
-        var (controller, context) = CreateController();
-        var message = ValidMessage();
-        message.Message = new string('F', 200);
-
-        var result = controller.SendUserMessage(message);
-
-        Assert.IsType<OkObjectResult>(result);
-        Assert.Single(context.Chat);
     }
 
     private static void SeedMessages(AppDbContext context, int count)
@@ -154,7 +137,7 @@ public class ChatEndpointTests
     [Fact]
     public async Task GetMessages_ReturnsOkWithMessagesOldestFirst()
     {
-        var (controller, context) = CreateController();
+        var (controller, context, _, _) = CreateController();
         SeedMessages(context, 3);
 
         var result = await controller.GetMessages(null);
@@ -169,7 +152,7 @@ public class ChatEndpointTests
     [Fact]
     public async Task GetMessages_UsesDefaultWindowWhenCountIsOmitted()
     {
-        var (controller, context) = CreateController();
+        var (controller, context, _, _) = CreateController();
         SeedMessages(context, 60);
 
         var result = await controller.GetMessages(null);
@@ -182,7 +165,7 @@ public class ChatEndpointTests
     [Fact]
     public async Task GetMessages_ReturnsRequestedNumberOfMessages()
     {
-        var (controller, context) = CreateController();
+        var (controller, context, _, _) = CreateController();
         SeedMessages(context, 5);
 
         var result = await controller.GetMessages(2);
@@ -197,7 +180,7 @@ public class ChatEndpointTests
     [Fact]
     public async Task GetMessages_ReturnsEmptyListWhenThereIsNoHistory()
     {
-        var (controller, _) = CreateController();
+        var (controller, _, _, _) = CreateController();
 
         var result = await controller.GetMessages(null);
 
@@ -205,5 +188,4 @@ public class ChatEndpointTests
         var messages = Assert.IsAssignableFrom<List<ChatMessage>>(ok.Value);
         Assert.Empty(messages);
     }
-
 }
