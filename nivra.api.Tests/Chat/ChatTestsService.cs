@@ -28,7 +28,7 @@ public class ChatTestsService
             UserId = 0
         };
 
-        var value = service.SendMessageToChat(chatMessage);
+        var value = await service.SendMessageToChat(chatMessage, CancellationToken.None);
         Assert.Equal(SendStatus.Success, value);
 
     }
@@ -44,17 +44,17 @@ public class ChatTestsService
         return (new ChatService(repository), repository);
     }
 
-    private static void SeedMessages(ChatRepo repository, int messageCount)
+    private static async Task SeedMessages(ChatRepo repository, int messageCount)
     {
         var start = new DateTime(2026, 10, 1, 9, 0, 0);
         for (var i = 1; i <= messageCount; i++)
         {
-            repository.Add(new backend.Models.Chat
+            await repository.Add(new backend.Models.Chat
             {
                 DateT = start.AddMinutes(i),
                 Message = $"message {i}",
                 UserId = 1
-            });
+            }, CancellationToken.None);
         }
     }
 
@@ -62,24 +62,24 @@ public class ChatTestsService
     public async Task ServiceReturnsMessagesOldestFirst()
     {
         var (service, repository) = CreateService();
-        repository.Add(new backend.Models.Chat
+        await repository.Add(new backend.Models.Chat
         {
             DateT = new DateTime(2026, 10, 2, 9, 0, 0),
             Message = "middle",
             UserId = 1
-        });
-        repository.Add(new backend.Models.Chat
+        }, CancellationToken.None);
+        await repository.Add(new backend.Models.Chat
         {
             DateT = new DateTime(2026, 10, 3, 9, 0, 0),
             Message = "newest",
             UserId = 1
-        });
-        repository.Add(new backend.Models.Chat
+        }, CancellationToken.None);
+        await repository.Add(new backend.Models.Chat
         {
             DateT = new DateTime(2026, 10, 1, 9, 0, 0),
             Message = "oldest",
             UserId = 1
-        });
+        }, CancellationToken.None);
 
         var messages = await service.GetMessagesAsync();
 
@@ -102,7 +102,7 @@ public class ChatTestsService
     public async Task ServiceReturnsNewestMessagesWhenGivenAnExplicitCount()
     {
         var (service, repository) = CreateService();
-        SeedMessages(repository, 5);
+        await SeedMessages(repository, 5);
 
         var messages = await service.GetMessagesAsync(2);
 
@@ -115,7 +115,7 @@ public class ChatTestsService
     public async Task ServiceUsesFiftyMessagesWhenNoCountIsGiven()
     {
         var (service, repository) = CreateService();
-        SeedMessages(repository, 60);
+        await SeedMessages(repository, 60);
 
         var messages = await service.GetMessagesAsync();
 
@@ -128,7 +128,7 @@ public class ChatTestsService
     public async Task ServiceCapsRequestsAboveOneHundredMessages()
     {
         var (service, repository) = CreateService();
-        SeedMessages(repository, 101);
+        await SeedMessages(repository, 101);
 
         var messages = await service.GetMessagesAsync(1000);
 
