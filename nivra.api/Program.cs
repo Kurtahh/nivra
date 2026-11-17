@@ -2,6 +2,7 @@ using backend.Interfaces;
 using backend.Repositories;
 using backend.Services;
 using Microsoft.EntityFrameworkCore;
+using backend.DataStructures;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,11 @@ builder.Services.AddScoped(typeof(IShopRepository<>), typeof(ShopRepository<>));
 builder.Services.AddScoped<ISkinService, SkinService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+
+
+builder.Services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
+
+builder.Services.AddHostedService<QueuedHostedService>();
 
 var app = builder.Build();
 

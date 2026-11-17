@@ -1,6 +1,7 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 import Chat from "../components/Chat";
+import { Session } from "../classes/Session";
 
 const MESSAGES_URL = "http://localhost:5207/api/Chat/Messages";
 
@@ -96,5 +97,56 @@ describe("Chat page", () => {
         );
         expect(screen.getByText("old message")).toBeInTheDocument();
         expect(historyRequests).toBe(1);
+    });
+
+    it("shows a sent message as pending until it appears in the history", async () => {
+        vi.spyOn(Session.instance, "getId").mockReturnValue(1);
+        let historyRequests = 0;
+        let resolveRefresh: ((response: Response) => void) | undefined;
+        let refreshRequested: (() => void) | undefined;
+        const refreshStarted = new Promise<void>((resolve) => {
+            refreshRequested = resolve;
+        });
+
+        vi.mocked(fetch).mockImplementation((input) => {
+            const url = String(input);
+            if (url === MESSAGES_URL) {
+                historyRequests += 1;
+                if (historyRequests === 1) {
+                    return Promise.resolve(jsonResponse([oldMessage]));
+                }
+
+                refreshRequested?.();
+                return new Promise<Response>((resolve) => {
+                    resolveRefresh = resolve;
+                });
+            }
+            return Promise.resolve(jsonResponse("Message sent successfully!"));
+        });
+
+        render(<Chat />);
+        await screen.findByText("old message");
+
+        fireEvent.change(screen.getByPlaceholderText(/type a message/i), {
+            target: { value: "new message" }
+        });
+        fireEvent.click(screen.getByRole("button", { name: /send/i }));
+
+        await refreshStarted;
+        expect(await screen.findByText("Sending...")).toBeInTheDocument();
+        expect(screen.getByText("new message")).toBeInTheDocument();
+
+        await act(async () => {
+            resolveRefresh?.(jsonResponse([
+                oldMessage,
+                { ...newMessage, dateT: new Date().toISOString() }
+            ]));
+            await Promise.resolve();
+        });
+
+        await waitFor(() =>
+            expect(screen.queryByText("Sending...")).not.toBeInTheDocument()
+        );
+        expect(screen.getByText("new message")).toBeInTheDocument();
     });
 });

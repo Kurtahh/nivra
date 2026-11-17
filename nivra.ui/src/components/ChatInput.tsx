@@ -1,9 +1,9 @@
 import { useState } from "react";
 import {Session} from "../classes/Session.ts";
 
-type Props = { changeHistory?: () => void };
+type Props = { onMessageSent?: (message: string) => void };
 
-export default function ChatInput({changeHistory}: Props) {
+export default function ChatInput({onMessageSent}: Props) {
     
     const [message, setMessage] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
@@ -29,9 +29,10 @@ export default function ChatInput({changeHistory}: Props) {
             });
 
             if (response.ok) {
+                const sentMessage = message;
                 setMessage("")
                 setErrorMsg("")
-                changeHistory?.();
+                onMessageSent?.(sentMessage);
             } else {
                 setErrorMsg(await response.text())
             }
