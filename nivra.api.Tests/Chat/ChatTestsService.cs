@@ -40,6 +40,10 @@ public class ChatTestsService
             .Options;
 
         var context = new AppDbContext(options);
+
+        context.Users.Add(new backend.Models.User { Id = 1, Username = "tester", PasswordHash = "x" });
+        context.SaveChanges();
+
         var repository = new ChatRepo(context);
         return (new ChatService(repository), repository);
     }
