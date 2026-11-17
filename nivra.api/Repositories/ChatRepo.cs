@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using backend.Enums;
 using backend.Interfaces;
 using backend.Models;
@@ -42,13 +43,26 @@ namespace backend.Repositories
             return SendStatus.Success;
         }
 
-        public async Task<List<Chat>> GetMessagesAsync(int count)
+        public async Task<List<ChatMessageDto>> GetMessagesAsync(int count)
         {
 
             if (count <= 0) return [];
 
             return await _context.Chat
                 .AsNoTracking()
+                .Join(
+                    _context.Users,
+                    (chat) => chat.UserId,
+                    (user) => (long)user.Id,
+                    (chat, user) => new ChatMessageDto
+                    (
+                        chat.Id,
+                        chat.DateT,
+                        chat.Message ?? "",
+                        chat.UserId,
+                        user.Username
+                    )
+                )
                 .OrderByDescending((chatMessage) => chatMessage.DateT)
                 .ThenByDescending((chatMessage) => chatMessage.Id)
                 .Take(count)
