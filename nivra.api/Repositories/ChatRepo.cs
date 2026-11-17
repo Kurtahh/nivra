@@ -1,3 +1,4 @@
+using System.Data;
 using System.Reflection.Metadata;
 using backend.Enums;
 using backend.Interfaces;
@@ -52,22 +53,21 @@ namespace backend.Repositories
                 .AsNoTracking()
                 .Join(
                     _context.Users,
-                    (chat) => chat.UserId,
-                    (user) => (long)user.Id,
-                    (chat, user) => new ChatMessageDto
-                    (
-                        chat.Id,
-                        chat.DateT,
-                        chat.Message ?? "",
-                        chat.UserId,
-                        user.Username
-                    )
-                )
-                .OrderByDescending((chatMessage) => chatMessage.DateT)
-                .ThenByDescending((chatMessage) => chatMessage.Id)
+                    chat => chat.UserId,
+                    user => (long)user.Id,
+                    (chat, user) => new { Chat = chat, User = user })
+                .OrderByDescending(row => row.Chat.DateT)
+                .ThenByDescending(row => row.Chat.Id)
                 .Take(count)
-                .OrderBy((chatMessage) => chatMessage.DateT)
-                .ThenBy((chatMessage) => chatMessage.Id)
+                .OrderBy(row => row.Chat.DateT)
+                .ThenBy(row => row.Chat.Id)
+                .Select(row => new ChatMessageDto(
+                    row.Chat.Id,
+                    row.Chat.DateT,
+                    row.Chat.Message ?? "",
+                    row.Chat.UserId,
+                    row.User.Username
+                ))
                 .ToListAsync();
         }
 
