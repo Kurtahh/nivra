@@ -4,6 +4,7 @@ using backend.Enums;
 using backend.Repositories;
 using backend.Services;
 using ChatMessage = backend.Models.Chat;
+using ChatMessageDto = backend.Models.ChatMessageDto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,10 @@ public class ChatEndpointTests
             .Options;
 
         var context = new AppDbContext(options);
+
+        context.Users.Add(new backend.Models.User { Id = 1, Username = "tester", PasswordHash = "x" });
+        context.SaveChanges();
+
         var queue = new BackgroundTaskQueue();
         var repository = new ChatRepo(context);
         var service = new ChatService(repository);
@@ -143,7 +148,7 @@ public class ChatEndpointTests
         var result = await controller.GetMessages(null);
 
         var ok = Assert.IsType<OkObjectResult>(result);
-        var messages = Assert.IsAssignableFrom<List<ChatMessage>>(ok.Value);
+        var messages = Assert.IsAssignableFrom<List<ChatMessageDto>>(ok.Value);
         Assert.Equal(
             new[] { "message 1", "message 2", "message 3" },
             messages.Select(message => message.Message));
@@ -158,7 +163,7 @@ public class ChatEndpointTests
         var result = await controller.GetMessages(null);
 
         var ok = Assert.IsType<OkObjectResult>(result);
-        var messages = Assert.IsAssignableFrom<List<ChatMessage>>(ok.Value);
+        var messages = Assert.IsAssignableFrom<List<ChatMessageDto>>(ok.Value);
         Assert.Equal(50, messages.Count);
     }
 
@@ -171,7 +176,7 @@ public class ChatEndpointTests
         var result = await controller.GetMessages(2);
 
         var ok = Assert.IsType<OkObjectResult>(result);
-        var messages = Assert.IsAssignableFrom<List<ChatMessage>>(ok.Value);
+        var messages = Assert.IsAssignableFrom<List<ChatMessageDto>>(ok.Value);
         Assert.Equal(
             new[] { "message 4", "message 5" },
             messages.Select(message => message.Message));
@@ -185,7 +190,7 @@ public class ChatEndpointTests
         var result = await controller.GetMessages(null);
 
         var ok = Assert.IsType<OkObjectResult>(result);
-        var messages = Assert.IsAssignableFrom<List<ChatMessage>>(ok.Value);
+        var messages = Assert.IsAssignableFrom<List<ChatMessageDto>>(ok.Value);
         Assert.Empty(messages);
     }
 }

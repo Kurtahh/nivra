@@ -232,6 +232,12 @@ button:disabled {
 
 .chat-text {
     overflow-wrap: anywhere;
+    flex: 1;
+}
+
+.chat-username {
+    flex: 0 0 auto;
+    font-weight: 600;
 }
 
 .chat-time {
