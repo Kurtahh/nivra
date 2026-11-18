@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
     isPendingMessageDelivered,
+    mergeChatMessages,
     type ChatMessage,
     type PendingChatMessage
 } from "../classes/ChatMessages.ts";
@@ -26,17 +27,24 @@ export default function ChatHistory({
     const [errorMsg, setErrorMsg] = useState("");
     const [loading, setLoading] = useState(true);
     const [profileUsername, setProfileUsername] = useState<string | null>(null);
+    const [liveErrorMsg, setLiveErrorMsg] = useState("");
     const [reconnectCount, setReconnectCount] = useState(0);
+    const listRef = useRef<HTMLUListElement>(null);
+    const stickToBottom = useRef(true);
     const onMessagesLoadedRef = useRef(onMessagesLoaded);
 
     useEffect(() => {
         onMessagesLoadedRef.current = onMessagesLoaded;
     }, [onMessagesLoaded]);
 
+    // Lets the parent clear "Sending..." messages once they show up,
+    // whether they came from the history request or from the live hub.
     useEffect(() => {
         onMessagesLoadedRef.current?.(messages);
     }, [messages]);
 
+    // Load the full history on mount, after sending a message, and after
+    // the live connection reconnects (messages may have been missed meanwhile).
     useEffect(() => {
         let cancelled = false;
 
@@ -48,7 +56,9 @@ export default function ChatHistory({
                 }
                 const history: ChatMessage[] = await response.json();
                 if (!cancelled) {
-                    setMessages(history);
+                    // Merge instead of replacing: a message pushed by the hub while
+                    // this request was in flight may be missing from the response.
+                    setMessages((previous) => mergeChatMessages(previous, history));
                     setErrorMsg("");
                 }
             } catch {
@@ -69,6 +79,7 @@ export default function ChatHistory({
         };
     }, [refreshToken, reconnectCount]);
 
+    // Live updates: the server pushes every newly saved message.
     useEffect(() => {
         let cancelled = false;
         const connection = createChatConnection();
@@ -77,24 +88,28 @@ export default function ChatHistory({
             if (cancelled) {
                 return;
             }
-            setMessages((previous) =>
-                previous.some((existing) => existing.id === message.id)
-                    ? previous
-                    : [...previous, message]
-            );
+            setMessages((previous) => mergeChatMessages(previous, [message]));
         });
 
         connection.onreconnected(() => {
             if (!cancelled) {
+                setLiveErrorMsg("");
                 setReconnectCount((count) => count + 1);
             }
         });
 
-        connection.start().catch(() => {
-            if (!cancelled) {
-                setErrorMsg("Live chat is unavailable. Reload the page to see new messages.");
-            }
-        });
+        connection.start()
+            .then(() => {
+                if (!cancelled) {
+                    setLiveErrorMsg("");
+                }
+            })
+            .catch((error: unknown) => {
+                if (!cancelled) {
+                    console.error("Could not connect to the chat hub", error);
+                    setLiveErrorMsg("Live chat is unavailable. Reload the page to see new messages.");
+                }
+            });
 
         return () => {
             cancelled = true;
@@ -106,6 +121,21 @@ export default function ChatHistory({
         (pendingMessage) => !isPendingMessageDelivered(pendingMessage, messages)
     );
     const hasMessages = messages.length > 0 || visiblePendingMessages.length > 0;
+
+    // Keep the newest message in view, unless the user has scrolled up to read older ones.
+    useEffect(() => {
+        const list = listRef.current;
+        if (list && stickToBottom.current) {
+            list.scrollTop = list.scrollHeight;
+        }
+    }, [messages.length, visiblePendingMessages.length, loading]);
+
+    function handleScroll() {
+        const list = listRef.current;
+        if (list) {
+            stickToBottom.current = list.scrollHeight - list.scrollTop - list.clientHeight < 80;
+        }
+    }
 
     if (loading) {
         return <p className="chat-loading">Loading chat history...</p>;
@@ -124,7 +154,10 @@ export default function ChatHistory({
             {errorMsg !== "" && (
                 <p className="chat-error" role="alert">{errorMsg}</p>
             )}
-            <ul className="chat-history">
+            {liveErrorMsg !== "" && (
+                <p className="chat-error" role="status">{liveErrorMsg}</p>
+            )}
+            <ul className="chat-history" ref={listRef} onScroll={handleScroll}>
                 {messages.map((chatMessage) => (
                     <li className="chat-message" key={chatMessage.id}>
                         <button

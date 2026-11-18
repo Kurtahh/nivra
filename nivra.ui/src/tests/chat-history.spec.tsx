@@ -10,6 +10,7 @@ type FakeConnection = {
     stop: ReturnType<typeof vi.fn>;
 };
 
+// setup.ts replaces the real SignalR connection with a fake one.
 function latestConnection(): FakeConnection {
     const results = vi.mocked(createChatConnection).mock.results;
     return results[results.length - 1].value as unknown as FakeConnection;
@@ -162,6 +163,40 @@ describe("ChatHistory", () => {
         });
 
         expect(screen.getAllByText("newest message")).toHaveLength(1);
+    });
+
+    it("keeps a pushed message when an older history response arrives later", async () => {
+        mockJsonOnce(threeMessages);
+        const { rerender } = render(<ChatHistory refreshToken={0} />);
+        await screen.findByText("newest message");
+
+        // The reload after sending is still in flight...
+        let resolveReload: ((response: Response) => void) | undefined;
+        vi.mocked(fetch).mockImplementationOnce(
+            () => new Promise<Response>((resolve) => { resolveReload = resolve; })
+        );
+        rerender(<ChatHistory refreshToken={1} />);
+
+        // ...when the hub pushes the newly saved message...
+        act(() => {
+            receiveMessageHandler()({
+                id: 4,
+                dateT: "2026-10-01T09:04:00Z",
+                message: "my new message",
+                userId: 1,
+                username: "alice",
+                equippedSkin: ""
+            });
+        });
+
+        // ...and then the reload answers with history from before the message was saved.
+        await act(async () => {
+            resolveReload?.({ ok: true, status: 200, json: async () => threeMessages } as Response);
+        });
+
+        expect(screen.getByText("my new message")).toBeInTheDocument();
+        const items = within(screen.getByRole("list")).getAllByRole("listitem");
+        expect(items[items.length - 1]).toHaveTextContent("my new message");
     });
 
     it("stops the hub connection when the chat is closed", async () => {
