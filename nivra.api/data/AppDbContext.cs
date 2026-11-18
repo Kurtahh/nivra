@@ -11,6 +11,7 @@ public class AppDbContext : DbContext
     public DbSet<StepEntry> StepEntries { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<HealthTip> HealthTips { get; set; }
+    public DbSet<BlogPost> BlogPosts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,5 +22,13 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<HealthTip>()
             .Property(t=>t.Category)
             .HasConversion(categoryConverter);
+        
+        var blogCategoryConverter = new ValueConverter<BlogCategory, string>(
+            category => category.ToString(),
+            text => Enum.Parse<BlogCategory>(text));
+
+        modelBuilder.Entity<BlogPost>()
+            .Property(p => p.Category)
+            .HasConversion(blogCategoryConverter);
     }
 }
