@@ -109,7 +109,7 @@ public class OrderTests
         var order = Assert.IsType<Order>(ok.Value);
         Assert.Equal("Updated", order.Name);
         Assert.Equal(50, order.Price);
-        Assert.Equal("Updated", repository.GetByIdNullable(3)!.Name);
+        Assert.Equal("Updated", repository.GetById(3)!.Name);
     }
 
     [Fact]
@@ -141,7 +141,7 @@ public class OrderTests
         var result = controller.DeleteOrder(8);
 
         Assert.IsType<NoContentResult>(result);
-        Assert.Null(repository.GetByIdNullable(8));
+        Assert.Null(repository.GetById(8));
     }
 
     [Fact]

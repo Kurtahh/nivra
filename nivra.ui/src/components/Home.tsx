@@ -12,7 +12,6 @@ export default function Home() {
     const userId = Number(currentSession.getId());
     const avatar = readCachedAvatar(userId);
 
-
     return (
         <div className="header">
             <span className="avatar avatar-large home-avatar" role="img" aria-label="Your profile picture">

@@ -12,11 +12,7 @@ public class AuthenticationTests
     {
         var context = TestDb.Create();
         var repository = new UserRepo(context);
-        var stepsRepository = new StepsRepo(context);
-        var skinService = new SkinService(
-            new ShopRepository<Skin>(context),
-            new ShopRepository<Order>(context));
-        return (new UserService(repository, stepsRepository, skinService), repository, context);
+        return (new UserService(repository), repository, context);
     }
 
     private static User NewUser(string username = "vincent", string password = "secret")
@@ -32,7 +28,7 @@ public class AuthenticationTests
         var status = service.SignUpUser(NewUser());
 
         Assert.Equal(backend.Enums.Status.Success, status);
-        Assert.NotEqual("secret", repository.GetUserNullable("vincent")!.PasswordHash);
+        Assert.NotEqual("secret", repository.GetUser("vincent")!.PasswordHash);
     }
 
     [Fact]
@@ -40,7 +36,7 @@ public class AuthenticationTests
     {
         var (service, repository, _) = CreateService();
         service.SignUpUser(NewUser(password: "correct"));
-        var databaseUser = repository.GetUserNullable("vincent")!;
+        var databaseUser = repository.GetUser("vincent")!;
         var inputUser = NewUser(password: "correct");
 
         Assert.True(service.CheckPassword(inputUser, databaseUser));
@@ -51,7 +47,7 @@ public class AuthenticationTests
     {
         var (service, repository, _) = CreateService();
         service.SignUpUser(NewUser(password: "correct"));
-        var databaseUser = repository.GetUserNullable("vincent")!;
+        var databaseUser = repository.GetUser("vincent")!;
         var inputUser = NewUser(password: "wrong");
 
         Assert.False(service.CheckPassword(inputUser, databaseUser));
@@ -82,7 +78,7 @@ public class AuthenticationTests
     {
         var (_, repository, _) = CreateService();
 
-        Assert.Null(repository.GetUserNullable("nobody"));
+        Assert.Null(repository.GetUser("nobody"));
     }
 
     private static UserController CreateController(UserService service, StepsService stepsService)
@@ -122,7 +118,7 @@ public class AuthenticationTests
     {
         var (service, repository, _) = CreateService();
         service.SignUpUser(NewUser("alice", "correct"));
-        var databaseUser = repository.GetUserNullable("alice")!;
+        var databaseUser = repository.GetUser("alice")!;
         var stepsService = new StepsService(new StepsRepo(TestDb.Create()));
         var controller = CreateController(service, stepsService);
 
