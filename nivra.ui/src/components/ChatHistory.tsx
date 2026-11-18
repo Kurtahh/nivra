@@ -6,6 +6,8 @@ import {
     type PendingChatMessage
 } from "../classes/ChatMessages.ts";
 import { Session } from "../classes/Session.ts";
+import { skinIcon } from "../classes/ShopApi.ts";
+import ProfilePopup from "./ProfilePopup.tsx";
 
 const messagesUrl = "http://localhost:5207/api/Chat/Messages";
 
@@ -23,6 +25,7 @@ export default function ChatHistory({
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [errorMsg, setErrorMsg] = useState("");
     const [loading, setLoading] = useState(true);
+    const [profileUsername, setProfileUsername] = useState<string | null>(null);
     const onMessagesLoadedRef = useRef(onMessagesLoaded);
 
     useEffect(() => {
@@ -96,7 +99,15 @@ export default function ChatHistory({
             <ul className="chat-history">
                 {messages.map((chatMessage) => (
                     <li className="chat-message" key={chatMessage.id}>
-                        <span className="chat-username">{chatMessage.username}</span>
+                        <button
+                            type="button"
+                            className="chat-username chat-username-button"
+                            onClick={() => setProfileUsername(chatMessage.username)}
+                            aria-label={`Open ${chatMessage.username}'s profile`}
+                        >
+                            <span aria-hidden="true">{skinIcon(chatMessage.equippedSkin)} </span>
+                            {chatMessage.username}
+                        </button>
                         <span className="chat-text">{chatMessage.message}</span>
                         <time className="chat-time" dateTime={chatMessage.dateT}>
                             {new Date(chatMessage.dateT).toLocaleTimeString([], {
@@ -111,12 +122,25 @@ export default function ChatHistory({
                         className="chat-message chat-message-pending"
                         key={`pending-${pendingMessage.id}`}
                     >
-                        <span className="chat-username">{String(Session.instance.getUsername())}</span>
+                        <button
+                            type="button"
+                            className="chat-username chat-username-button"
+                            onClick={() => setProfileUsername(String(Session.instance.getUsername()))}
+                            aria-label="Open your profile"
+                        >
+                            {String(Session.instance.getUsername())}
+                        </button>
                         <span className="chat-text">{pendingMessage.message}</span>
                         <span className="chat-pending" role="status">Sending...</span>
                     </li>
                 ))}
             </ul>
+            {profileUsername !== null && (
+                <ProfilePopup
+                    username={profileUsername}
+                    onClose={() => setProfileUsername(null)}
+                />
+            )}
         </>
     );
 }
