@@ -334,4 +334,30 @@ public class ChatTestsRepo
             new[] {"tester"},
             user.Select(message => message.Username));
     }
+
+    [Fact]
+    public async Task GetMessageByIdAsync_ReturnsTheMessageWithItsUsername()
+    {
+        var context = TestDb.Create();
+        context.Users.Add(new User { Id = 1, Username = "tester", PasswordHash = "x" });
+        context.SaveChanges();
+
+        var repository = new ChatRepo(context);
+        await repository.Add(new Chat { Id = 7, Message = "hi", UserId = 1 }, CancellationToken.None);
+
+        var result = await repository.GetMessageByIdAsync(7);
+
+        Assert.NotNull(result);
+        Assert.Equal("hi", result.Message);
+        Assert.Equal("tester", result.Username);
+    }
+
+    [Fact]
+    public async Task GetMessageByIdAsync_ReturnsNullForAnUnknownId()
+    {
+        var repository = new ChatRepo(TestDb.Create());
+
+        Assert.Null(await repository.GetMessageByIdAsync(404));
+
+    }
 }

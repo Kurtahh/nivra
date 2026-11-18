@@ -42,5 +42,16 @@ namespace backend.Services
                 .Select(m => m with { equippedSkin = skins[m.UserId] })
                 .ToList();
         }
+
+        public async Task<ChatMessageDto?> GetMessageByIdAsync(int id)
+        {
+            ChatMessageDto? message = await _repository.GetMessageByIdAsync(id);
+            if (message is null)
+            {
+                return null;
+            }
+
+            return message with { equippedSkin = _skinService.GetEquippedSkinName(message.UserId) };
+        }
     }
 }
