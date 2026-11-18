@@ -17,7 +17,7 @@ namespace backend.Repositories
 
         public Status Add(User user)
         {
-            var databaseUser = GetUser(user.Username);
+            var databaseUser = GetUserNullable(user.Username);
             if (databaseUser == null && user.Username != "" && user.PasswordHash != "")
             {
                 
