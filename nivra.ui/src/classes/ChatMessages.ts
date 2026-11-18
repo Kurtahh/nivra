@@ -1,5 +1,3 @@
-export const CHAT_POLL_INTERVAL_MS = 3000;
-
 // The backend timestamps a message when its background worker stores it, so the
 // stored time can be slightly before or after the moment the browser sent it.
 const PENDING_MATCH_WINDOW_MS = 60_000;

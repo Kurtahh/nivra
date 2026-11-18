@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import {
-    CHAT_POLL_INTERVAL_MS,
     isPendingMessageDelivered,
     type ChatMessage,
     type PendingChatMessage
 } from "../classes/ChatMessages.ts";
 import { Session } from "../classes/Session.ts";
 import { skinIcon } from "../classes/ShopApi.ts";
+import { createChatConnection, RECEIVE_MESSAGE_EVENT } from "../classes/chat-connection.ts";
 import ProfilePopup from "./ProfilePopup.tsx";
 
 const messagesUrl = "http://localhost:5207/api/Chat/Messages";
@@ -26,6 +26,7 @@ export default function ChatHistory({
     const [errorMsg, setErrorMsg] = useState("");
     const [loading, setLoading] = useState(true);
     const [profileUsername, setProfileUsername] = useState<string | null>(null);
+    const [reconnectCount, setReconnectCount] = useState(0);
     const onMessagesLoadedRef = useRef(onMessagesLoaded);
 
     useEffect(() => {
@@ -33,15 +34,13 @@ export default function ChatHistory({
     }, [onMessagesLoaded]);
 
     useEffect(() => {
+        onMessagesLoadedRef.current?.(messages);
+    }, [messages]);
+
+    useEffect(() => {
         let cancelled = false;
-        let requestInFlight = false;
 
         async function loadHistory() {
-            if (requestInFlight) {
-                return;
-            }
-
-            requestInFlight = true;
             try {
                 const response = await fetch(messagesUrl);
                 if (!response.ok) {
@@ -51,14 +50,12 @@ export default function ChatHistory({
                 if (!cancelled) {
                     setMessages(history);
                     setErrorMsg("");
-                    onMessagesLoadedRef.current?.(history);
                 }
             } catch {
                 if (!cancelled) {
                     setErrorMsg("Could not load chat history");
                 }
             } finally {
-                requestInFlight = false;
                 if (!cancelled) {
                     setLoading(false);
                 }
@@ -66,13 +63,44 @@ export default function ChatHistory({
         }
 
         loadHistory();
-        const intervalId = window.setInterval(loadHistory, CHAT_POLL_INTERVAL_MS);
 
         return () => {
             cancelled = true;
-            window.clearInterval(intervalId);
         };
-    }, [refreshToken]);
+    }, [refreshToken, reconnectCount]);
+
+    useEffect(() => {
+        let cancelled = false;
+        const connection = createChatConnection();
+
+        connection.on(RECEIVE_MESSAGE_EVENT, (message: ChatMessage) => {
+            if (cancelled) {
+                return;
+            }
+            setMessages((previous) =>
+                previous.some((existing) => existing.id === message.id)
+                    ? previous
+                    : [...previous, message]
+            );
+        });
+
+        connection.onreconnected(() => {
+            if (!cancelled) {
+                setReconnectCount((count) => count + 1);
+            }
+        });
+
+        connection.start().catch(() => {
+            if (!cancelled) {
+                setErrorMsg("Live chat is unavailable. Reload the page to see new messages.");
+            }
+        });
+
+        return () => {
+            cancelled = true;
+            connection.stop();
+        };
+    }, []);
 
     const visiblePendingMessages = pendingMessages.filter(
         (pendingMessage) => !isPendingMessageDelivered(pendingMessage, messages)

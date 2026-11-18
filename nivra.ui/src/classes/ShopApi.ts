@@ -63,8 +63,8 @@ const SKIN_ICONS: Record<string, string> = {
     cosmic: "🌌",
 };
 
-export function skinIcon(name: string): string {
-    return SKIN_ICONS[name.trim().toLowerCase()] ?? "🏃";
+export function skinIcon(name: string | null | undefined): string {
+    return SKIN_ICONS[(name ?? "").trim().toLowerCase()] ?? "🏃";
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
