@@ -5,6 +5,7 @@ import {
     type ChatMessage,
     type PendingChatMessage
 } from "../classes/ChatMessages.ts";
+import { Session } from "../classes/Session.ts";
 
 const messagesUrl = "http://localhost:5207/api/Chat/Messages";
 
@@ -95,6 +96,7 @@ export default function ChatHistory({
             <ul className="chat-history">
                 {messages.map((chatMessage) => (
                     <li className="chat-message" key={chatMessage.id}>
+                        <span className="chat-username">{chatMessage.username}</span>
                         <span className="chat-text">{chatMessage.message}</span>
                         <time className="chat-time" dateTime={chatMessage.dateT}>
                             {new Date(chatMessage.dateT).toLocaleTimeString([], {
@@ -109,6 +111,7 @@ export default function ChatHistory({
                         className="chat-message chat-message-pending"
                         key={`pending-${pendingMessage.id}`}
                     >
+                        <span className="chat-username">{String(Session.instance.getUsername())}</span>
                         <span className="chat-text">{pendingMessage.message}</span>
                         <span className="chat-pending" role="status">Sending...</span>
                     </li>

@@ -197,6 +197,10 @@ public class ChatTestsRepo
             .Options;
 
         var context = new AppDbContext(options);
+
+        context.Users.Add(new backend.Models.User { Id = 1, Username = "tester", PasswordHash = "x" });
+        context.SaveChanges();
+
         return (new ChatRepo(context), context);
     }
 
@@ -315,5 +319,19 @@ public class ChatTestsRepo
         Assert.Equal([], values);
         values = await repository.GetMessagesAsync(0);
         Assert.Equal([], values);
+    }
+
+    [Fact]
+    public async Task GetMessagesReturnsTheUsernameOfTheSender()
+    {
+        var (repository, _) = CreateRepo();
+
+        await repository.Add(NewMessage("username", new DateTime(2026, 10, 1, 9, 0, 0)), CancellationToken.None);
+
+        var user = await repository.GetMessagesAsync(1);
+
+        Assert.Equal(
+            new[] {"tester"},
+            user.Select(message => message.Username));
     }
 }

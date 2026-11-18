@@ -21,7 +21,7 @@ namespace backend.Services
             return await _repository.Add(message, stoppingToken);
         }
 
-        public async Task<List<Chat>> GetMessagesAsync(int count = 50)
+        public async Task<List<ChatMessageDto>> GetMessagesAsync(int count = 50)
         {
 
             if (count > 100)

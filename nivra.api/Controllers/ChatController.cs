@@ -22,7 +22,7 @@ public class ChatController(IBackgroundTaskQueue queue, IChatService service) : 
     [Route("Messages")]
     public async Task<IActionResult> GetMessages([FromQuery] int? count)
     {
-        List<Chat> messages = [];
+        List<ChatMessageDto> messages = [];
         if (count == null)
         {
             messages = await service.GetMessagesAsync();

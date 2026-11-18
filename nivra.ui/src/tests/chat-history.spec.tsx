@@ -15,9 +15,9 @@ function mockJsonOnce(body: unknown, ok = true) {
 }
 
 const threeMessages = [
-    { id: 1, dateT: "2026-10-01T09:01:00Z", message: "oldest message", userId: 1 },
-    { id: 2, dateT: "2026-10-01T09:02:00Z", message: "middle message", userId: 1 },
-    { id: 3, dateT: "2026-10-01T09:03:00Z", message: "newest message", userId: 2 }
+    { id: 1, dateT: "2026-10-01T09:01:00Z", message: "oldest message", userId: 1, username: "alice" },
+    { id: 2, dateT: "2026-10-01T09:02:00Z", message: "middle message", userId: 1, username: "alice" },
+    { id: 3, dateT: "2026-10-01T09:03:00Z", message: "newest message", userId: 2, username: "bob" }
 ];
 
 describe("ChatHistory", () => {
@@ -72,6 +72,16 @@ describe("ChatHistory", () => {
         expect(screen.queryByRole("list")).not.toBeInTheDocument();
     });
 
+    it("shows the username of each sender", async () => {
+        mockJsonOnce(threeMessages);
+
+        render(<ChatHistory />);
+
+        await screen.findByText("newest message");
+        expect(screen.getAllByText("alice")).toHaveLength(2);
+        expect(screen.getByText("bob")).toBeInTheDocument();
+    });
+
     it("shows an error when the history cannot be loaded", async () => {
         mockJsonOnce([], false);
 
@@ -107,7 +117,8 @@ describe("ChatHistory", () => {
                     id: 4,
                     dateT: "2026-10-01T09:04:00Z",
                     message: "polled message",
-                    userId: 2
+                    userId: 2,
+                    username: "bob"
                 }
             ]);
 

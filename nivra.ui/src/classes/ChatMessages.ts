@@ -9,6 +9,7 @@ export interface ChatMessage {
     dateT: string;
     message: string;
     userId: number;
+    username: string;
 }
 
 export interface PendingChatMessage {
