@@ -7,4 +7,5 @@ public interface IChatRepo
 {
     Task<SendStatus> Add(Chat message, CancellationToken stoppingToken);
     Task<List<ChatMessageDto>> GetMessagesAsync(int count);
+    Task<ChatMessageDto?> GetMessageByIdAsync(int id);
 }

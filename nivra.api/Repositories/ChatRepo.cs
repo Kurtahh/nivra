@@ -72,6 +72,25 @@ namespace backend.Repositories
                 .ToListAsync();
         }
 
-    
+        public async Task<ChatMessageDto?> GetMessageByIdAsync(int id)
+        {
+            return await _context.Chat
+                .AsNoTracking()
+                .Where(chat => chat.Id == id)
+                .Join(
+                    _context.Users,
+                    chat => chat.UserId,
+                    user => (long)user.Id,
+                    (chat, user) => new { Chat = chat, User = user })
+                .Select(row => new ChatMessageDto(
+                    row.Chat.Id,
+                    row.Chat.DateT,
+                    row.Chat.Message ?? "",
+                    row.Chat.UserId,
+                    row.User.Username,
+                    ""
+                ))
+                .FirstOrDefaultAsync();
+        }
     }
 }
