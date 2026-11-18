@@ -1,12 +1,16 @@
 using System.Diagnostics;
 using backend.Interfaces;
 using backend.Models;
+using backend.Enums;
+using backend.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace backend.Services;
 
 public sealed class QueuedHostedService(
     IBackgroundTaskQueue queue,
     IServiceScopeFactory scopeFactory,
+    IHubContext<ChatHub> hubContext,
     ILogger<QueuedHostedService> logger ) : BackgroundService
 {
     
@@ -39,8 +43,20 @@ public sealed class QueuedHostedService(
                         message.Id,
                         message.Message);
 
-                    await chatService.SendMessageToChat(message, stoppingToken);
+                    SendStatus status = await chatService.SendMessageToChat(message, stoppingToken);
+                    if (status != SendStatus.Success)
+                    {
+                        logger.LogWarning("Message {MessageId} was not saved: {Status}", message.Id, status);
+                        continue;
+                    }
+
                     logger.LogInformation("Message {MessageId} persisted", message.Id);
+
+                    ChatMessageDto? savedMessage = await chatService.GetMessageByIdAsync(message.Id);
+                    if (savedMessage is not null)
+                    {
+                        await hubContext.Clients.All.SendAsync("ReceiveMessage", savedMessage, stoppingToken);
+                    }
                 }
                 catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
                 {

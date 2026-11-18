@@ -6,6 +6,8 @@ using backend.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
+using backend.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace nivra.api.Tests.Chat;
 
@@ -58,6 +60,7 @@ public class BackgroundProcessingTests
         var hostedService = new QueuedHostedService(
             queue,
             scopeFactory.Object,
+            Mock.Of<IHubContext<ChatHub>>(),
             Mock.Of<ILogger<QueuedHostedService>>());
 
         await hostedService.StartAsync(CancellationToken.None);
