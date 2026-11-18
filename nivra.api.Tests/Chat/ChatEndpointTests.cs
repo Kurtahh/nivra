@@ -26,16 +26,9 @@ public class ChatEndpointTests
 
         var queue = new BackgroundTaskQueue();
         var repository = new ChatRepo(context);
-        var service = new ChatService(repository, CreateSkinService(context));
+        var service = new ChatService(repository);
 
         return (new ChatController(queue, service), context, queue, service);
-    }
-
-    private static SkinService CreateSkinService(AppDbContext context)
-    {
-        var skinRepository = new ShopRepository<backend.Models.Skin>(context);
-        skinRepository.Add(new backend.Models.Skin { Id = 3, Name = "Explorer", Price = 0 });
-        return new SkinService(skinRepository, new ShopRepository<backend.Models.Order>(context));
     }
 
     private static ChatMessage ValidMessage(long userId = 1)

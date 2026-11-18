@@ -8,12 +8,10 @@ namespace backend.Services
     public class ChatService : IChatService
     {
         private readonly IChatRepo _repository;
-        private readonly ISkinService _skinService;
 
-        public ChatService(IChatRepo repository, ISkinService skinService)
+        public ChatService(IChatRepo repository)
         {
             _repository = repository;
-            _skinService = skinService;
         }
 
 
@@ -29,18 +27,8 @@ namespace backend.Services
             if (count > 100)
             {
                 count = 100;
-            }
-
-            List<ChatMessageDto> messages = await _repository.GetMessagesAsync(count);
-
-            Dictionary<long, string> skins = messages
-                .Select(m => m.UserId)
-                .Distinct()
-                .ToDictionary(id => id, id => _skinService.GetEquippedSkinName(id));
-
-            return messages
-                .Select(m => m with { equippedSkin = skins[m.UserId] })
-                .ToList();
+            } 
+            return await _repository.GetMessagesAsync(count);
         }
     }
 }

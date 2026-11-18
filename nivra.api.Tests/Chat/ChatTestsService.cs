@@ -18,7 +18,7 @@ public class ChatTestsService
 
         var context = new AppDbContext(options);
         var repository = new ChatRepo(context);
-        var service = new ChatService(repository, CreateSkinService(context));
+        var service = new ChatService(repository);
         
         var chatMessage = new backend.Models.Chat
         {
@@ -33,13 +33,6 @@ public class ChatTestsService
 
     }
 
-    private static SkinService CreateSkinService(AppDbContext context)
-    {
-        var skinRepository = new ShopRepository<backend.Models.Skin>(context);
-        skinRepository.Add(new backend.Models.Skin { Id = 3, Name = "Explorer", Price = 0 });
-        return new SkinService(skinRepository, new ShopRepository<backend.Models.Order>(context));
-    }
-
     private static (ChatService Service, ChatRepo Repo) CreateService()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -52,7 +45,7 @@ public class ChatTestsService
         context.SaveChanges();
 
         var repository = new ChatRepo(context);
-        return (new ChatService(repository, CreateSkinService(context)), repository);
+        return (new ChatService(repository), repository);
     }
 
     private static async Task SeedMessages(ChatRepo repository, int messageCount)

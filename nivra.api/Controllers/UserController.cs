@@ -1,7 +1,6 @@
 using backend.Enums;
 using backend.Interfaces;
 using backend.Models;
-using backend.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -58,13 +57,6 @@ namespace backend.Controllers
         public int GetTodaySteps(long id)
         {
             return _stepsService.GetTodaySteps(id);
-        }
-
-        [HttpGet]
-        [Route("Profile/{username}")]
-        public ProfileInfoResponse GetUserInfo(string username)
-        {
-            return _service.GetUserInfo(username);
         }
     }
 }

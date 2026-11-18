@@ -6,6 +6,5 @@ namespace backend.Interfaces;
 public interface IUserRepo
 {
     Status Add(User user);
-    User GetUser(string username);
-    User? GetUserNullable(string username);
+    User? GetUser(string username);
 }
