@@ -1,4 +1,5 @@
 using backend.Interfaces;
+using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories;
@@ -25,10 +26,14 @@ public class ShopRepository<T> : IShopRepository<T> where T : class, IShopEntity
         _context.SaveChanges();
     }
 
-    public T? GetById(int id)
-    
+    public T? GetByIdNullable(int id)
     {
         return _table.Find(id);
+    }
+
+    public T GetById(int id)
+    {
+        return _table.First(e => e.Id == id);
     }
 
     public void Update(T obj)
@@ -42,5 +47,10 @@ public class ShopRepository<T> : IShopRepository<T> where T : class, IShopEntity
     {
         _table.Add(value);
         _context.SaveChanges();
+    }
+
+    public T? GetByPrefix(string prefix)
+    {
+        return _table.Where(e => e.Name.StartsWith(prefix)).OrderByDescending(e => e.Id).FirstOrDefault();      
     }
 }

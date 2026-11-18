@@ -19,7 +19,7 @@ public class OrderService : IOrderService
 
     public Order? GetOrderById(int id)
     {
-        return _repository.GetById(id);
+        return _repository.GetByIdNullable(id);
     }
 
     public Order CreateOrder(Order order)
@@ -36,7 +36,7 @@ public class OrderService : IOrderService
     {
         ValidateOrder(order);
 
-        var existingOrder = _repository.GetById(id);
+        var existingOrder = _repository.GetByIdNullable(id);
         if (existingOrder == null)
         {
             return null;
@@ -52,7 +52,7 @@ public class OrderService : IOrderService
 
     public bool DeleteOrder(int id)
     {
-        var existingOrder = _repository.GetById(id);
+        var existingOrder = _repository.GetByIdNullable(id);
         if (existingOrder == null)
         {
             return false;

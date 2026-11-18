@@ -19,7 +19,7 @@ public class AccountService : IAccountService
 
     public Account? GetAccountById(int id)
     {
-        return _repository.GetById(id);
+        return _repository.GetByIdNullable(id);
     }
 
     public Account CreateAccount(Account account)
@@ -36,7 +36,7 @@ public class AccountService : IAccountService
     {
         ValidateAccount(account);
 
-        var existingAccount = _repository.GetById(id);
+        var existingAccount = _repository.GetByIdNullable(id);
         if (existingAccount == null)
         {
             return null;
@@ -52,7 +52,7 @@ public class AccountService : IAccountService
 
     public bool DeleteAccount(int id)
     {
-        var existingAccount = _repository.GetById(id);
+        var existingAccount = _repository.GetByIdNullable(id);
         if (existingAccount == null)
         {
             return false;

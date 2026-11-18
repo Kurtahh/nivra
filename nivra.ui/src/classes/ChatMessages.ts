@@ -10,6 +10,7 @@ export interface ChatMessage {
     message: string;
     userId: number;
     username: string;
+    equippedSkin: string;
 }
 
 export interface PendingChatMessage {

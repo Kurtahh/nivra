@@ -13,7 +13,8 @@ public class SkinTests
     {
         var context = TestDb.Create();
         var repository = new ShopRepository<Skin>(context);
-        var service = new SkinService(repository);
+        var orderRepository = new ShopRepository<Order>(context);
+        var service = new SkinService(repository, orderRepository);
         return (new SkinController(service), repository);
     }
 
@@ -109,7 +110,7 @@ public class SkinTests
         var skin = Assert.IsType<Skin>(ok.Value);
         Assert.Equal("Updated", skin.Name);
         Assert.Equal(50, skin.Price);
-        Assert.Equal("Updated", repository.GetById(3)!.Name);
+        Assert.Equal("Updated", repository.GetByIdNullable(3)!.Name);
     }
 
     [Fact]
@@ -141,7 +142,7 @@ public class SkinTests
         var result = controller.DeleteSkin(8);
 
         Assert.IsType<NoContentResult>(result);
-        Assert.Null(repository.GetById(8));
+        Assert.Null(repository.GetByIdNullable(8));
     }
 
     [Fact]
