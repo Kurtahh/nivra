@@ -10,6 +10,13 @@ namespace nivra.api.Tests.Signup;
 
 public class UserSignupTests
 {
+    private static SkinService CreateSkinService(AppDbContext context)
+    {
+        return new SkinService(
+            new ShopRepository<Skin>(context),
+            new ShopRepository<Order>(context));
+    }
+
     [Fact]
      public async Task SignUpReturnsSuccessIfUserSignsUp()
     {
@@ -19,7 +26,7 @@ public class UserSignupTests
 
         var context = new AppDbContext(options);
         var repository = new UserRepo(context);
-        var service = new UserService(repository);
+        var service = new UserService(repository, new StepsRepo(context), CreateSkinService(context));
         
         var user = new User
         {
@@ -44,7 +51,7 @@ public class UserSignupTests
 
         var context = new AppDbContext(options);
         var repository = new UserRepo(context);
-        var service = new UserService(repository);
+        var service = new UserService(repository, new StepsRepo(context), CreateSkinService(context));
         
         var user = new User
         {
@@ -232,7 +239,7 @@ public class UserSignupTests
         var context = new AppDbContext(options);
         var repository = new UserRepo(context);
         var repositorySteps = new StepsRepo(context);
-        var service = new UserService(repository);
+        var service = new UserService(repository, new StepsRepo(context), CreateSkinService(context));
         var serviceStep = new StepsService(repositorySteps);
         var controller = new UserController(service, serviceStep);
         

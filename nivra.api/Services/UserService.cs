@@ -10,21 +10,15 @@ namespace backend.Services{
     {
         private readonly IUserRepo _repository;
         private readonly IStepsRepo _stepsRepository;
-        private readonly IShopRepository<Order> _orderRepository;
-        private readonly IShopRepository<Skin> _skinRepository;
         private readonly ISkinService _skinService;
         public UserService(
             IUserRepo repository, 
             IStepsRepo stepsRepository, 
-            IShopRepository<Order> orderRepository,
-            IShopRepository<Skin> skinRepository,
             ISkinService skinService
             )
         {
             _repository = repository;
             _stepsRepository = stepsRepository;
-            _orderRepository = orderRepository;
-            _skinRepository = skinRepository;
             _skinService = skinService;
         }
 

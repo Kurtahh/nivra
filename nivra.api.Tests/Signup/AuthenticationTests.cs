@@ -12,7 +12,11 @@ public class AuthenticationTests
     {
         var context = TestDb.Create();
         var repository = new UserRepo(context);
-        return (new UserService(repository), repository, context);
+        var stepsRepository = new StepsRepo(context);
+        var skinService = new SkinService(
+            new ShopRepository<Skin>(context),
+            new ShopRepository<Order>(context));
+        return (new UserService(repository, stepsRepository, skinService), repository, context);
     }
 
     private static User NewUser(string username = "vincent", string password = "secret")
