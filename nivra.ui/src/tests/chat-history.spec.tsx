@@ -1,7 +1,28 @@
 import { act, render, screen, waitFor, within } from "@testing-library/react";
 import { vi } from "vitest";
 import ChatHistory from "../components/ChatHistory";
-import { CHAT_POLL_INTERVAL_MS } from "../classes/ChatMessages";
+import { createChatConnection } from "../classes/chat-connection";
+
+type FakeConnection = {
+    on: ReturnType<typeof vi.fn>;
+    onreconnected: ReturnType<typeof vi.fn>;
+    start: ReturnType<typeof vi.fn>;
+    stop: ReturnType<typeof vi.fn>;
+};
+
+// setup.ts replaces the real SignalR connection with a fake one.
+function latestConnection(): FakeConnection {
+    const results = vi.mocked(createChatConnection).mock.results;
+    return results[results.length - 1].value as unknown as FakeConnection;
+}
+
+function receiveMessageHandler() {
+    const call = latestConnection().on.mock.calls.find((call) => call[0] === "ReceiveMessage");
+    if (!call) {
+        throw new Error("ChatHistory did not subscribe to ReceiveMessage");
+    }
+    return call[1] as (message: unknown) => void;
+}
 
 const MESSAGES_URL = "http://localhost:5207/api/Chat/Messages";
 
@@ -102,35 +123,89 @@ describe("ChatHistory", () => {
         );
     });
 
-    it("refreshes the history on a polling interval", async () => {
-        vi.useFakeTimers();
+    it("connects to the chat hub and listens for new messages", async () => {
         mockJsonOnce(threeMessages);
-        const { unmount } = render(<ChatHistory />);
 
-        try {
-            await act(async () => {});
-            expect(screen.getByText("newest message")).toBeInTheDocument();
+        render(<ChatHistory />);
 
-            mockJsonOnce([
-                ...threeMessages,
-                {
-                    id: 4,
-                    dateT: "2026-10-01T09:04:00Z",
-                    message: "polled message",
-                    userId: 2,
-                    username: "bob"
-                }
-            ]);
+        await screen.findByText("newest message");
+        expect(latestConnection().start).toHaveBeenCalledTimes(1);
+        expect(receiveMessageHandler()).toBeTypeOf("function");
+    });
 
-            await act(async () => {
-                await vi.advanceTimersByTimeAsync(CHAT_POLL_INTERVAL_MS);
+    it("appends a message pushed by the hub without reloading the history", async () => {
+        mockJsonOnce(threeMessages);
+        render(<ChatHistory />);
+        await screen.findByText("newest message");
+
+        act(() => {
+            receiveMessageHandler()({
+                id: 4,
+                dateT: "2026-10-01T09:04:00Z",
+                message: "live message",
+                userId: 2,
+                username: "bob",
+                equippedSkin: ""
             });
+        });
 
-            expect(screen.getByText("polled message")).toBeInTheDocument();
-            expect(fetch).toHaveBeenCalledTimes(2);
-        } finally {
-            unmount();
-            vi.useRealTimers();
-        }
+        expect(screen.getByText("live message")).toBeInTheDocument();
+        expect(fetch).toHaveBeenCalledTimes(1);
+    });
+
+    it("ignores a pushed message that is already shown", async () => {
+        mockJsonOnce(threeMessages);
+        render(<ChatHistory />);
+        await screen.findByText("newest message");
+
+        act(() => {
+            receiveMessageHandler()(threeMessages[2]);
+        });
+
+        expect(screen.getAllByText("newest message")).toHaveLength(1);
+    });
+
+    it("keeps a pushed message when an older history response arrives later", async () => {
+        mockJsonOnce(threeMessages);
+        const { rerender } = render(<ChatHistory refreshToken={0} />);
+        await screen.findByText("newest message");
+
+        // The reload after sending is still in flight...
+        let resolveReload: ((response: Response) => void) | undefined;
+        vi.mocked(fetch).mockImplementationOnce(
+            () => new Promise<Response>((resolve) => { resolveReload = resolve; })
+        );
+        rerender(<ChatHistory refreshToken={1} />);
+
+        // ...when the hub pushes the newly saved message...
+        act(() => {
+            receiveMessageHandler()({
+                id: 4,
+                dateT: "2026-10-01T09:04:00Z",
+                message: "my new message",
+                userId: 1,
+                username: "alice",
+                equippedSkin: ""
+            });
+        });
+
+        // ...and then the reload answers with history from before the message was saved.
+        await act(async () => {
+            resolveReload?.({ ok: true, status: 200, json: async () => threeMessages } as Response);
+        });
+
+        expect(screen.getByText("my new message")).toBeInTheDocument();
+        const items = within(screen.getByRole("list")).getAllByRole("listitem");
+        expect(items[items.length - 1]).toHaveTextContent("my new message");
+    });
+
+    it("stops the hub connection when the chat is closed", async () => {
+        mockJsonOnce([]);
+        const { unmount } = render(<ChatHistory />);
+        await screen.findByText(/no messages yet/i);
+
+        unmount();
+
+        expect(latestConnection().stop).toHaveBeenCalledTimes(1);
     });
 });

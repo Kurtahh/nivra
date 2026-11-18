@@ -48,6 +48,7 @@ export default function ChatInput({onMessageSent}: Props) {
                 <input
                     id="chat-message"
                     type="text"
+                    autoComplete="off"
                     placeholder="Type a message..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
