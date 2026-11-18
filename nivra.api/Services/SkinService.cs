@@ -6,10 +6,11 @@ namespace backend.Services;
 public class SkinService : ISkinService
 {
     private readonly IShopRepository<Skin> _repository;
-
-    public SkinService(IShopRepository<Skin> repository)
+    private readonly IShopRepository<Order> _orderRepository;
+    public SkinService(IShopRepository<Skin> repository, IShopRepository<Order> orderRepository)
     {
         _repository = repository;
+        _orderRepository = orderRepository;
     }
 
     public IEnumerable<Skin> GetSkins()
@@ -19,7 +20,7 @@ public class SkinService : ISkinService
 
     public Skin? GetSkinById(int id)
     {
-        return _repository.GetById(id);
+        return _repository.GetByIdNullable(id);
     }
 
     public Skin CreateSkin(Skin skin)
@@ -36,7 +37,7 @@ public class SkinService : ISkinService
     {
         ValidateSkin(skin);
 
-        var existingSkin = _repository.GetById(id);
+        var existingSkin = _repository.GetByIdNullable(id);
         if (existingSkin == null)
         {
             return null;
@@ -52,7 +53,7 @@ public class SkinService : ISkinService
 
     public bool DeleteSkin(int id)
     {
-        var existingSkin = _repository.GetById(id);
+        var existingSkin = _repository.GetByIdNullable(id);
         if (existingSkin == null)
         {
             return false;
@@ -74,5 +75,20 @@ public class SkinService : ISkinService
         {
             throw new ArgumentException("Skin price cannot be negative.");
         }
+    }
+
+    public string GetEquippedSkinName(long id)
+    {
+        Order? latestEquip = _orderRepository.GetByPrefix($"equip:{id}:");
+        int skinId;
+        if (latestEquip is not null){
+            int indexOfLastColon = latestEquip.Name.LastIndexOf(':');
+            string textSkinId = latestEquip.Name.Substring(indexOfLastColon+1);
+            skinId = int.Parse(textSkinId);
+        }
+        else
+            skinId = 3; //default skin
+
+        return _repository.GetById(skinId).Name;
     }
 }

@@ -35,7 +35,7 @@ export default function Home() {
                 <Link className="home-shop-link" to={shopPath}>Change avatar in the shop</Link>
                 <HealthTipWidget />
             </div>
-            {profileOpen && <ProfilePopup onClose={() => setProfileOpen(false)} todaySteps={todaySteps} />}
+            {profileOpen && <ProfilePopup username={currentSession.getUsername().toString()} onClose={() => setProfileOpen(false)} />}
         </div>
     );
 }

@@ -66,7 +66,8 @@ namespace backend.Repositories
                     row.Chat.DateT,
                     row.Chat.Message ?? "",
                     row.Chat.UserId,
-                    row.User.Username
+                    row.User.Username,
+                    ""
                 ))
                 .ToListAsync();
         }

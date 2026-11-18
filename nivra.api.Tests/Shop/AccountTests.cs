@@ -109,7 +109,7 @@ public class AccountTests
         var account = Assert.IsType<Account>(ok.Value);
         Assert.Equal("Updated", account.Name);
         Assert.Equal(50, account.Balance);
-        Assert.Equal("Updated", repository.GetById(3)!.Name);
+        Assert.Equal("Updated", repository.GetByIdNullable(3)!.Name);
     }
 
     [Fact]
@@ -141,7 +141,7 @@ public class AccountTests
         var result = controller.DeleteAccount(8);
 
         Assert.IsType<NoContentResult>(result);
-        Assert.Null(repository.GetById(8));
+        Assert.Null(repository.GetByIdNullable(8));
     }
 
     [Fact]
