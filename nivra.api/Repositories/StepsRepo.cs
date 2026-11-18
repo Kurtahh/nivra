@@ -28,5 +28,10 @@ namespace backend.Repositories
             _context.StepEntries.Update(entry);
             _context.SaveChanges();
         }
+
+        public List<StepEntry> EntriesAfterDate(DateOnly date, long userid)
+        {
+            return _context.StepEntries.Where(e => e.UserId == userid && e.Date > date).ToList();
+        }
     }
 }

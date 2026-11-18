@@ -28,7 +28,7 @@ public class AuthenticationTests
         var status = service.SignUpUser(NewUser());
 
         Assert.Equal(backend.Enums.Status.Success, status);
-        Assert.NotEqual("secret", repository.GetUser("vincent")!.PasswordHash);
+        Assert.NotEqual("secret", repository.GetUserNullable("vincent")!.PasswordHash);
     }
 
     [Fact]
@@ -36,7 +36,7 @@ public class AuthenticationTests
     {
         var (service, repository, _) = CreateService();
         service.SignUpUser(NewUser(password: "correct"));
-        var databaseUser = repository.GetUser("vincent")!;
+        var databaseUser = repository.GetUserNullable("vincent")!;
         var inputUser = NewUser(password: "correct");
 
         Assert.True(service.CheckPassword(inputUser, databaseUser));
@@ -47,7 +47,7 @@ public class AuthenticationTests
     {
         var (service, repository, _) = CreateService();
         service.SignUpUser(NewUser(password: "correct"));
-        var databaseUser = repository.GetUser("vincent")!;
+        var databaseUser = repository.GetUserNullable("vincent")!;
         var inputUser = NewUser(password: "wrong");
 
         Assert.False(service.CheckPassword(inputUser, databaseUser));
@@ -78,7 +78,7 @@ public class AuthenticationTests
     {
         var (_, repository, _) = CreateService();
 
-        Assert.Null(repository.GetUser("nobody"));
+        Assert.Null(repository.GetUserNullable("nobody"));
     }
 
     private static UserController CreateController(UserService service, StepsService stepsService)
@@ -118,7 +118,7 @@ public class AuthenticationTests
     {
         var (service, repository, _) = CreateService();
         service.SignUpUser(NewUser("alice", "correct"));
-        var databaseUser = repository.GetUser("alice")!;
+        var databaseUser = repository.GetUserNullable("alice")!;
         var stepsService = new StepsService(new StepsRepo(TestDb.Create()));
         var controller = CreateController(service, stepsService);
 
