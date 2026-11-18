@@ -5,5 +5,6 @@ public record ChatMessageDto(
     DateTime DateT,
     string Message,
     long UserId,
-    string Username
+    string Username,
+    string equippedSkin
 );

@@ -9,4 +9,5 @@ public interface ISkinService
     Skin CreateSkin(Skin skin);
     Skin? UpdateSkin(int id, Skin skin);
     bool DeleteSkin(int id);
+    string GetEquippedSkinName(long id);
 }

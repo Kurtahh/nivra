@@ -29,10 +29,14 @@ namespace backend.Repositories
             return Status.Failure;
         }
 
-
-        public User? GetUser(string username)
+        public User GetUser(string username)
         {
-             return _context.Users.FirstOrDefault(u => u.Username == username);
+            return _context.Users.Single(u => u.Username == username);
+        }
+
+        public User? GetUserNullable(string username)
+        {
+            return _context.Users.FirstOrDefault(u => u.Username == username);
         }
     } 
 }
