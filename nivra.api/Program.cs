@@ -3,6 +3,7 @@ using backend.Repositories;
 using backend.Services;
 using Microsoft.EntityFrameworkCore;
 using backend.DataStructures;
+using backend.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ builder.Services.AddDbContext<AppDbContext>((DbContextOptionsBuilder options) =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
 builder.Services.AddScoped<IStepsRepo, StepsRepo>();
 builder.Services.AddScoped<IStepsService, StepsService>();
 builder.Services.AddScoped<IUserRepo, UserRepo>();
@@ -60,5 +62,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<ChatHub>("/hubs/chat");
 
 app.Run();
