@@ -2,6 +2,7 @@ using System.Runtime.InteropServices.JavaScript;
 using backend.Interfaces;
 using backend.Models;
 using backend.Repositories;
+using backend.Exceptions;
 
 namespace backend.Services{
     public class StepsService : IStepsService
@@ -16,7 +17,7 @@ namespace backend.Services{
         {
             if(stepCount <= minStepCount)
             {
-                throw new ArgumentException("Your step count must exceed " + minStepCount.ToString());
+                throw new InvalidStepCountException(minStepCount);
             }
         }
 
