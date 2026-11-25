@@ -34,7 +34,7 @@ export default function InputSteps({onStepsLogged}: Props) {
     return (
         <div className="centered-form">
             <label>
-                Input your steps taken today:
+                Input all of your steps taken today:
             </label>
             <br/>
             <form onSubmit={handleSubmit}>

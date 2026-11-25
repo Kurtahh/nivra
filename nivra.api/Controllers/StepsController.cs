@@ -1,6 +1,7 @@
 using backend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using backend.Models.Requests;
+using backend.Exceptions;
 
 namespace backend.Controllers
 {
@@ -23,9 +24,9 @@ namespace backend.Controllers
                 _service.LogSteps(body.StepCount, body.UserId);
                 return Ok();
             }
-            catch(ArgumentException e)
+            catch(InvalidStepCountException e)
             {
-                return BadRequest(e.Message);
+                return BadRequest(e.Message );
             }
         }
     }
