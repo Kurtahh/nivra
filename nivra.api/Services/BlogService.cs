@@ -7,16 +7,16 @@ namespace backend.Services
 {
     public class BlogService
     {
-        private readonly BlogRepo _repository;
+        private readonly BlogRepo _blogRepository;
 
-        public BlogService(BlogRepo repository)
+        public BlogService(BlogRepo blogRepository)
         {
-            _repository = repository;
+            _blogRepository = blogRepository;
         }
 
         public List<BlogPost> GetAllPosts()
         {
-            return _repository.GetAll();
+            return _blogRepository.GetAll();
         }
 
         public void CreatePost(CreateBlogPostRequest request)
@@ -30,7 +30,7 @@ namespace backend.Services
             if (!Enum.IsDefined(request.Category))
                 throw new ArgumentException("Invalid blog category.");
 
-            var user = _repository.GetUser(request.UserId);
+            var user = _blogRepository.GetUser(request.UserId);
 
             if (user == null)
                 throw new ArgumentException("User not found");
@@ -44,7 +44,11 @@ namespace backend.Services
                 Username = user.Username
             };
 
-            _repository.Add(post);
+            _blogRepository.Add(post);
+        }
+        public bool DeletePost(int postId, int userId)
+        {
+            return _blogRepository.Delete(postId, userId);
         }
     }
 }

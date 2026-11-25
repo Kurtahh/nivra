@@ -8,17 +8,17 @@ namespace backend.Controllers
     [ApiController]
     public class BlogController : ControllerBase
     {
-        private readonly BlogService _service;
+        private readonly BlogService _blogService;
 
-        public BlogController(BlogService service)
+        public BlogController(BlogService blogService)
         {
-            _service = service;
+            _blogService = blogService;
         }
 
         [HttpGet]
         public IActionResult GetAllPosts()
         {
-            var posts = _service.GetAllPosts();
+            var posts = _blogService.GetAllPosts();
             return Ok(posts);
         }
 
@@ -27,13 +27,24 @@ namespace backend.Controllers
         {
             try
             {
-                _service.CreatePost(request);
+                _blogService.CreatePost(request);
                 return Ok("Post created successfully.");
             }
             catch (ArgumentException e)
             {
                 return BadRequest(e.Message);
             }
+        }
+        
+        [HttpDelete("{postId}")]
+        public IActionResult DeletePost(int postId, [FromQuery] int userId)
+        {
+            bool deleted = _blogService.DeletePost(postId, userId);
+
+            if (!deleted)
+                return NotFound("Post not found or you cannot delete it.");
+
+            return Ok("Post deleted successfully.");
         }
     }
 }

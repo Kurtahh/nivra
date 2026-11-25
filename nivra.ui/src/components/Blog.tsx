@@ -31,6 +31,14 @@ export default function Blog() {
         loadPosts().catch(error =>
             console.error("Error loading blog posts:", error)
         );
+        
+        const interval = setInterval(() => {
+            loadPosts().catch(error =>
+                console.error("Error loading blog posts:", error)
+            );
+        }, 5000);
+        
+        return () => clearInterval(interval);
     }, []);
 
     async function handleSubmit(event: FormEvent) {
@@ -64,6 +72,31 @@ export default function Blog() {
             await loadPosts();
         } catch {
             setError("Could not create the post. Please try again.");
+        }
+    }
+
+    async function handleDelete(postId: number) {
+        const confirmed = window.confirm("Are you sure you want to delete this post?");
+
+        if (!confirmed)
+            return;
+
+        try {
+            const response = await fetch(
+                `http://localhost:5207/api/Blog/${postId}?userId=${Number(session.getId())}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+            if (!response.ok) {
+                setError("Could not delete the post.");
+                return;
+            }
+
+            await loadPosts();
+        } catch {
+            setError("Could not delete the post. Please try again.");
         }
     }
 
@@ -124,6 +157,11 @@ export default function Blog() {
                     <p className="blog-category">Category: {post.category}</p>
                     <p className="blog-post-info">By {post.username}</p>
                     <p className="blog-post-info">{new Date(post.createdAt).toLocaleDateString()}</p>
+                    {post.userId === Number(session.getId()) && (
+                        <button onClick={() => handleDelete(post.id)}>
+                            Delete
+                        </button>
+                    )}
                 </div>
             ))}  </div>
         </div>
