@@ -17,7 +17,7 @@ namespace backend.Services{
         {
             if(stepCount <= minStepCount)
             {
-                throw new InvalidStepCountException();
+                throw new InvalidStepCountException(minStepCount);
             }
         }
 

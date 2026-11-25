@@ -2,8 +2,8 @@
 
 public class InvalidStepCountException : Exception
 {
-    public InvalidStepCountException()
-        : base("Steps must be greater than zero.")
+    public InvalidStepCountException(int minStepCount)
+        : base("Steps must be greater than " + minStepCount.ToString())
     {
     }
 }
